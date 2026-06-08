@@ -24,7 +24,7 @@ export default function Navbar() {
 
       <a
         className={styles.ghLink}
-        href="https://github.com/matchinist"
+        href="https://github.com/matchinist/kartal-xi"
         target="_blank"
         rel="noreferrer"
       >
