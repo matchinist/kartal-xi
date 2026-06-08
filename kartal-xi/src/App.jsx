@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import './styles/global.css';
@@ -13,18 +13,18 @@ function Placeholder({ name }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="grid-bg" />
       <div className="scanline" />
       <div className="page-wrap">
         <Navbar />
         <Routes>
-          <Route path="/"          element={<Home />} />
-          <Route path="/matches"   element={<Placeholder name="Matches" />} />
-          <Route path="/players"   element={<Placeholder name="Players" />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/matches" element={<Placeholder name="Matches" />} />
+          <Route path="/players" element={<Placeholder name="Players" />} />
           <Route path="/standings" element={<Placeholder name="Standings" />} />
         </Routes>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
