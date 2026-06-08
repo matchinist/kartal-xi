@@ -1,0 +1,67 @@
+.heroStrip {
+  padding: 32px 24px 24px;
+  border-bottom: 0.5px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.heroTitle {
+  font-family: var(--cond);
+  font-weight: 900;
+  font-size: 56px;
+  line-height: 0.9;
+  letter-spacing: 2px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.heroTitle span {
+  color: var(--gold);
+}
+
+.heroMeta {
+  text-align: right;
+}
+
+.heroMetaLine {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.heroSeason {
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--gold);
+  letter-spacing: 2px;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.mainCol {
+  border-right: 0.5px solid var(--border);
+}
+
+.footer {
+  border-top: 0.5px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  color: var(--text-dimmer);
+  letter-spacing: 1.5px;
+}
+
+.gold {
+  color: var(--gold);
+}

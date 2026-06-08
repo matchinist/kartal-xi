@@ -1,0 +1,74 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 0.5px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(8, 8, 8, 0.95);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+}
+
+.logo {
+  font-family: var(--cond);
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: #fff;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoMark {
+  width: 26px;
+  height: 26px;
+  background: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #000;
+  font-weight: 900;
+}
+
+.links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.links a {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.links a:hover,
+.links a.active {
+  color: var(--gold);
+}
+
+.ghLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+  padding: 6px 12px;
+  border: 0.5px solid var(--border2);
+  text-transform: uppercase;
+  transition: all 0.2s;
+  font-family: var(--mono);
+}
+
+.ghLink:hover {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+}

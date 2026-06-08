@@ -1,0 +1,100 @@
+.sidebar {}
+
+.secLabel {
+  padding: 14px 16px 10px;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.secLabel::before {
+  content: '// ';
+  color: var(--text-dimmer);
+}
+
+.scorerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.rank {
+  font-family: var(--cond);
+  font-size: 18px;
+  color: var(--text-dimmer);
+  min-width: 16px;
+}
+
+.info { flex: 1; }
+
+.name {
+  font-size: 11px;
+  color: var(--text);
+}
+
+.pos {
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.goals {
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--gold);
+}
+
+.stRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-bottom: 0.5px solid var(--border);
+  font-size: 11px;
+}
+
+.stRow:last-child {
+  border-bottom: none;
+}
+
+.stRow.me {
+  background: #110f00;
+}
+
+.stPos {
+  color: var(--text-dim);
+  min-width: 14px;
+  font-size: 10px;
+}
+
+.stPos.champ { color: #4a8fd4; }
+.stPos.gold  { color: var(--gold); }
+
+.stName {
+  flex: 1;
+  color: #888;
+}
+
+.stName.gold { color: var(--gold); }
+
+.stPts {
+  font-family: var(--cond);
+  font-size: 16px;
+  color: #fff;
+}
+
+.stGd {
+  font-size: 9px;
+  color: var(--text-dim);
+  min-width: 28px;
+  text-align: right;
+}
+
+.stGd.gold { color: var(--gold); }

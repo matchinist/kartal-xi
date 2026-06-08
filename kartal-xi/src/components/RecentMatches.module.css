@@ -1,0 +1,116 @@
+.wrap {}
+
+.formRow {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 12px 24px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.formLabel {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+
+.fd {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+}
+
+.fdW { background: #0d2e1a; color: #4caf80; }
+.fdD { background: #1e1e00; color: #b8b800; }
+.fdL { background: #2e0d0d; color: #e05252; }
+
+.formNote {
+  font-size: 9px;
+  color: var(--text-dimmer);
+  margin-left: 6px;
+  letter-spacing: 1px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.compBadge {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border: 0.5px solid;
+  min-width: 36px;
+  text-align: center;
+}
+
+.compSL  { color: #555; border-color: #222; }
+.compUCL { color: #4a8fd4; border-color: #1a3a6e; }
+.compTC  { color: #c44444; border-color: #4a1818; }
+
+.teams {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team {
+  font-size: 12px;
+  color: #888;
+}
+
+.team.bjk {
+  color: #fff;
+  font-weight: 500;
+}
+
+.score {
+  font-family: var(--cond);
+  font-weight: 700;
+  font-size: 16px;
+  background: var(--bg2);
+  padding: 4px 10px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  letter-spacing: 2px;
+}
+
+.scoreHome { color: #fff; }
+.scoreAway { color: #555; }
+.scoreSep  { color: var(--border2); font-weight: 300; }
+
+.resBadge {
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 3px 7px;
+  border: 0.5px solid;
+}
+
+.resW { color: #4caf80; border-color: #1a5c35; }
+.resD { color: #b8b800; border-color: #3a3a00; }
+.resL { color: #e05252; border-color: #5c1a1a; }
+
+.date {
+  font-size: 10px;
+  color: var(--text-dim);
+  min-width: 48px;
+  text-align: right;
+}

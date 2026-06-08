@@ -1,0 +1,35 @@
+.label {
+  padding: 14px 24px 10px;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  border-bottom: 0.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label::before {
+  content: '// ';
+  color: var(--text-dimmer);
+}
+
+.tag {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--text-dimmer);
+  padding: 3px 8px;
+  border: 0.5px solid var(--border2);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+}
