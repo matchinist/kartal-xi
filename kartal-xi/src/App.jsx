@@ -20,9 +20,9 @@ export default function App() {
       <div className="page-wrap">
         <Navbar />
         <Routes>
-          <Route path="/"          element={<Home />} />
-          <Route path="/matches"   element={<Placeholder name="Matches" />} />
-          <Route path="/players"   element={<Placeholder name="Players" />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/matches" element={<Placeholder name="Matches" />} />
+          <Route path="/players" element={<Placeholder name="Players" />} />
           <Route path="/standings" element={<Placeholder name="Standings" />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
