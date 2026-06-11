@@ -1,0 +1,41 @@
+.wrap { border-bottom: 0.5px solid var(--border); }
+
+.header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 8px; border-bottom: 0.5px solid var(--border); }
+.headerLeft { display: flex; align-items: center; gap: 8px; }
+.headerTitle { font-size: 11px; letter-spacing: 2px; color: #fff; text-transform: uppercase; font-family: var(--mono); }
+.officialBadge { font-size: 8px; letter-spacing: 1px; padding: 2px 6px; background: var(--red); color: #fff; border-radius: 2px; }
+.formation { font-family: var(--cond); font-size: 14px; color: var(--red); letter-spacing: 1px; }
+
+.tabs { display: flex; border-bottom: 0.5px solid var(--border); }
+.tabBtn { flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; color: #fff; padding: 7px 2px; font-family: var(--mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; margin-bottom: -1px; transition: all 0.2s; }
+.tabActive { color: var(--red) !important; border-bottom-color: var(--red) !important; }
+
+.avgBar { padding: 6px 16px; font-size: 10px; letter-spacing: 1px; color: #fff; border-bottom: 0.5px solid var(--border); display: flex; gap: 16px; flex-wrap: wrap; }
+.avgBar strong { color: var(--red); }
+
+.pitch { position: relative; width: calc(100% - 24px); margin: 10px 12px 0; padding-bottom: 135%; background: #1a3a1a; border: 0.5px solid #2a5a2a; border-radius: 3px; overflow: hidden; }
+.centerLine { position: absolute; width: 100%; height: 1px; background: rgba(255,255,255,0.08); top: 50%; }
+.penaltyTop { position: absolute; width: 50%; height: 16%; border: 0.5px solid rgba(255,255,255,0.08); border-top: none; top: 0; left: 25%; }
+.penaltyBottom { position: absolute; width: 50%; height: 16%; border: 0.5px solid rgba(255,255,255,0.08); border-bottom: none; bottom: 0; left: 25%; }
+
+.slot { position: absolute; transform: translate(-50%,-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; z-index: 2; }
+
+.avatar { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--red); overflow: hidden; flex-shrink: 0; background: #111; }
+.flagImg { width: 100%; height: 100%; object-fit: cover; display: block; }
+.flagFallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #fff; font-family: var(--mono); background: #1a1a1a; }
+
+.name { font-size: 13px; color: #fff; font-family: var(--mono); white-space: nowrap; background: rgba(0,0,0,0.82); padding: 1px 4px; border-radius: 2px; max-width: 64px; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+
+.belowVal { font-size: 13px; font-family: var(--mono); color: #000; background: #fff; padding: 1px 5px; border-radius: 2px; white-space: nowrap; text-align: center; font-weight: 600; }
+
+/* SUBS */
+.subsSection { border-top: 0.5px solid var(--border); margin: 0 12px 12px; }
+.subsToggle { width: 100%; background: transparent; border: none; border-bottom: 0.5px solid var(--border); color: #fff; padding: 8px 0; font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; text-align: left; transition: color 0.2s; }
+.subsToggle:hover { color: var(--red); }
+
+.subsList { display: flex; flex-direction: column; gap: 3px; padding-top: 8px; }
+.subRow { display: flex; align-items: center; gap: 8px; }
+.subNum { font-family: var(--cond); font-size: 14px; color: var(--red); min-width: 20px; }
+.subName { font-size: 11px; color: #fff; flex: 1; }
+.subExtra { font-size: 10px; color: var(--text-dim); min-width: 44px; text-align: right; }
+.subPos { font-size: 9px; color: var(--text-dimmer); letter-spacing: 1px; text-transform: uppercase; min-width: 52px; text-align: right; }

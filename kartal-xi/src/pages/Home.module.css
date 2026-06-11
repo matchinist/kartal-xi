@@ -1,54 +1,61 @@
-.heroStrip {
-  padding: 32px 24px 24px;
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
   border-bottom: 0.5px solid var(--border);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
 }
 
-.heroTitle {
-  font-family: var(--cond);
-  font-weight: 900;
-  font-size: 56px;
-  line-height: 0.9;
+.leftCol {
+  border-right: 0.5px solid var(--border);
+}
+
+.sidebar {}
+
+.secLabel {
+  padding: 12px 16px;
+  font-size: 11px;
   letter-spacing: 2px;
   color: #fff;
   text-transform: uppercase;
+  border-bottom: 0.5px solid var(--border);
+  margin-top: 1px;
+  font-family: var(--mono);
 }
 
-.heroTitle span {
-  color: var(--gold);
+.scorerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 0.5px solid var(--border);
 }
 
-.heroMeta {
-  text-align: right;
+.rank {
+  font-family: var(--cond);
+  font-size: 18px;
+  color: var(--text-dimmer);
+  min-width: 16px;
 }
 
-.heroMetaLine {
+.info { flex: 1; }
+
+.name {
+  font-size: 11px;
+  color: #fff;
+}
+
+.pos {
   font-size: 9px;
-  letter-spacing: 2px;
   color: var(--text-dim);
+  letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: 3px;
+  margin-top: 2px;
 }
 
-.heroSeason {
+.goals {
   font-family: var(--cond);
   font-weight: 700;
   font-size: 22px;
   color: var(--gold);
-  letter-spacing: 2px;
-}
-
-.twoCol {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  border-bottom: 0.5px solid var(--border);
-}
-
-.mainCol {
-  border-right: 0.5px solid var(--border);
 }
 
 .footer {
@@ -62,6 +69,27 @@
   letter-spacing: 1.5px;
 }
 
-.gold {
-  color: var(--gold);
+.red { color: var(--red); }
+
+@media (max-width: 640px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .leftCol {
+    border-right: none;
+    order: 2;
+  }
+
+  .sidebar {
+    order: 1;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    padding: 12px 16px;
+  }
 }

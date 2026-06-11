@@ -1,131 +1,109 @@
 .wrap {
-  padding: 28px 24px 24px;
+  padding: 16px 20px 20px;
   border-bottom: 0.5px solid var(--border);
-  position: relative;
-  overflow: hidden;
 }
 
-.corner {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: var(--gold);
-  border-style: solid;
-  opacity: 0.4;
-}
-.tl { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
-.tr { top: 12px; right: 12px; border-width: 1px 1px 0 0; }
-.bl { bottom: 12px; left: 12px; border-width: 0 0 1px 1px; }
-.br { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
-
-.matchup {
+.eventHeader {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
-.team {
-  flex: 1;
-}
-
-.team.away {
-  text-align: right;
-}
-
-.teamName {
-  font-family: var(--cond);
-  font-weight: 900;
-  font-size: 42px;
-  line-height: 1;
+.tournament {
+  font-size: 9px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
+  color: var(--gold);
+}
+
+.stadium {
+  font-size: 9px;
   letter-spacing: 1px;
   color: #fff;
 }
 
-.team.bjk .teamName {
-  color: var(--gold);
+.date {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #fff;
 }
 
-.teamSide {
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--text-dim);
-  margin-top: 4px;
+.dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-dimmer);
+  flex-shrink: 0;
+}
+
+.matchup {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.teamName {
+  flex: 1;
+  font-family: var(--cond);
+  font-weight: 900;
+  font-size: 32px;
+  line-height: 1;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+  text-align: center;
 }
 
 .vsBlock {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 20px;
-  gap: 4px;
+  padding: 0 14px;
+  gap: 3px;
   flex-shrink: 0;
 }
 
 .vsDivider {
   width: 1px;
-  height: 44px;
+  height: 30px;
   background: var(--border2);
 }
 
 .vs {
   font-family: var(--cond);
   font-weight: 300;
-  font-size: 13px;
+  font-size: 11px;
   color: var(--text-dimmer);
-  letter-spacing: 4px;
-}
-
-.infoRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  margin-bottom: 20px;
-}
-
-.infoCell {
-  background: var(--bg2);
-  padding: 10px 14px;
-}
-
-.infoKey {
-  font-size: 8px;
-  letter-spacing: 2.5px;
-  color: var(--text-dimmer);
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-.infoVal {
-  font-size: 12px;
-  color: var(--text);
-  letter-spacing: 0.5px;
-}
-
-.infoVal.gold {
-  color: var(--gold);
+  letter-spacing: 3px;
 }
 
 .countdown {
   display: flex;
   gap: 2px;
   align-items: center;
+  justify-content: center;
+}
+
+.cdGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .cdBlock {
   background: var(--bg2);
   border: 0.5px solid var(--border2);
-  padding: 10px 14px;
-  min-width: 58px;
+  padding: 8px 12px;
+  min-width: 52px;
   text-align: center;
 }
 
 .cdNum {
   font-family: var(--cond);
   font-weight: 700;
-  font-size: 26px;
+  font-size: 24px;
   color: #fff;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -135,15 +113,23 @@
 .cdUnit {
   font-size: 8px;
   letter-spacing: 2px;
-  color: var(--text-dimmer);
-  margin-top: 4px;
+  color: #fff;
+  margin-top: 3px;
   text-transform: uppercase;
 }
 
 .cdSep {
-  font-size: 20px;
+  font-size: 18px;
   color: var(--text-dimmer);
-  padding: 0 2px;
+  padding: 0 1px;
   align-self: flex-start;
-  margin-top: 10px;
+  margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .wrap { padding: 14px 16px 16px; }
+  .teamName { font-size: 24px; }
+  .vsBlock { padding: 0 10px; }
+  .cdBlock { min-width: 44px; padding: 6px 8px; }
+  .cdNum { font-size: 20px; }
 }

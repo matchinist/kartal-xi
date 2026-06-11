@@ -1,0 +1,70 @@
+.wrap { padding: 24px; }
+
+.center { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; font-size: 11px; letter-spacing: 2px; color: var(--text-dim); }
+
+.loginWrap { display: flex; align-items: center; justify-content: center; min-height: 400px; }
+.loginBox { border: 0.5px solid var(--border2); padding: 32px; width: 100%; max-width: 360px; background: var(--bg2); }
+.loginTitle { font-family: var(--cond); font-weight: 900; font-size: 20px; letter-spacing: 3px; color: var(--red); margin-bottom: 24px; }
+.loginForm { display: flex; flex-direction: column; gap: 12px; }
+
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 0.5px solid var(--border); }
+.title { font-family: var(--cond); font-weight: 900; font-size: 20px; letter-spacing: 3px; color: var(--red); }
+.headerRight { display: flex; align-items: center; gap: 12px; }
+.userLabel { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+
+.tabs { display: flex; gap: 2px; margin-bottom: 24px; border-bottom: 0.5px solid var(--border); flex-wrap: wrap; }
+.tabBtn { background: transparent; border: none; border-bottom: 2px solid transparent; color: #fff; padding: 10px 16px; font-family: var(--mono); font-size: 14px; letter-spacing: 1px; cursor: pointer; margin-bottom: -1px; transition: all 0.2s; text-transform: uppercase; }
+.tabBtn:hover { color: #fff; }
+.tabActive { color: var(--red) !important; border-bottom-color: var(--red) !important; }
+
+.section { margin-bottom: 40px; }
+.sectionTitle { font-size: 10px; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 16px; }
+
+.subSection { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 0.5px solid var(--border); }
+.subSection:last-child { border-bottom: none; }
+.subSectionTitle { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 14px; }
+
+.form { display: flex; flex-direction: column; gap: 12px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+.fieldSmall { display: flex; flex-direction: column; gap: 6px; width: 90px; }
+.fieldSmall label { font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+
+.input { background: var(--bg2); border: 0.5px solid var(--border2); color: #fff; padding: 9px 12px; font-family: var(--mono); font-size: 12px; outline: none; width: 100%; transition: border-color 0.2s; }
+.input:focus { border-color: var(--red-dim); }
+.input option { background: var(--bg2); }
+
+.btn { background: var(--red); color: #fff; border: none; padding: 10px 24px; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; align-self: flex-start; transition: opacity 0.2s; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btnSmall { background: transparent; color: var(--text-dim); border: 0.5px solid var(--border2); padding: 5px 12px; font-family: var(--mono); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.btnSmall:hover { color: #fff; border-color: #555; }
+
+.btnDelete { background: transparent; color: #e05252; border: 0.5px solid #4a1818; padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 1px; cursor: pointer; white-space: nowrap; }
+.btnEdit { background: transparent; color: #fff; border: 0.5px solid var(--border2); padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.btnEdit:hover { border-color: var(--red); color: var(--red); }
+
+.btnAdd { background: var(--red); color: #fff; border: none; padding: 9px 16px; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; cursor: pointer; white-space: nowrap; height: 38px; transition: opacity 0.2s; }
+.btnAdd:disabled { opacity: 0.5; }
+
+.matchList { display: flex; flex-direction: column; gap: 1px; }
+.matchRow { display: flex; align-items: center; justify-content: space-between; background: var(--bg2); padding: 12px 16px; gap: 16px; }
+.matchInfo { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+.matchTeams { font-size: 13px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.matchMeta { font-size: 10px; color: var(--text-dim); letter-spacing: 0.5px; }
+.matchScore { font-family: var(--cond); font-size: 16px; color: var(--red); }
+
+.addRow { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 10px; flex-wrap: wrap; }
+.goalList { display: flex; flex-direction: column; gap: 1px; margin-top: 8px; }
+.goalRow { display: flex; align-items: center; gap: 12px; background: var(--bg2); padding: 10px 14px; }
+.minute { font-family: var(--cond); font-size: 18px; color: var(--red); min-width: 36px; }
+.scorer { flex: 1; font-size: 12px; color: #fff; }
+
+.error { font-size: 11px; color: #e05252; letter-spacing: 0.5px; }
+.success { font-size: 11px; color: #4caf80; letter-spacing: 0.5px; }
+.empty { font-size: 11px; color: var(--text-dimmer); letter-spacing: 1px; padding: 8px 0; }
+
+.modalOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal { background: var(--bg2); border: 0.5px solid var(--border2); padding: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+.modalTitle { font-family: var(--cond); font-size: 18px; letter-spacing: 2px; color: #fff; margin-bottom: 20px; }

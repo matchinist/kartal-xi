@@ -1,0 +1,28 @@
+.wrap { display: flex; flex-direction: column; gap: 24px; }
+.field { display: flex; flex-direction: column; gap: 6px; max-width: 300px; }
+.field label { font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+.input { background: var(--bg2); border: 0.5px solid var(--border2); color: var(--text); padding: 9px 12px; font-family: var(--mono); font-size: 12px; outline: none; width: 100%; }
+.input:focus { border-color: var(--gold-dim); }
+.sectionTitle { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 10px; }
+.hint { font-size: 10px; color: var(--text-dimmer); letter-spacing: 0.5px; margin-bottom: 14px; line-height: 1.7; }
+.textarea { width: 100%; background: var(--bg2); border: 0.5px solid var(--border2); color: var(--text); padding: 12px; font-family: var(--mono); font-size: 11px; outline: none; resize: vertical; line-height: 1.8; letter-spacing: 0.5px; margin-bottom: 10px; }
+.textarea:focus { border-color: var(--gold-dim); }
+.btn { background: var(--bg2); color: var(--text-dim); border: 0.5px solid var(--border2); padding: 8px 20px; font-family: var(--mono); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.btn:hover { color: var(--gold); border-color: var(--gold-dim); }
+.btnSave { background: var(--gold); color: #000; border: none; padding: 10px 24px; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin-top: 12px; transition: opacity 0.2s; }
+.btnSave:disabled { opacity: 0.5; cursor: not-allowed; }
+.tableWrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.table th { padding: 8px 10px; text-align: left; font-size: 9px; letter-spacing: 1.5px; color: var(--text-dimmer); text-transform: uppercase; border-bottom: 0.5px solid var(--border); font-weight: normal; }
+.table td { padding: 6px 10px; border-bottom: 0.5px solid var(--border); color: var(--text); }
+.bjkRow td { background: #110f00; color: var(--gold); }
+.numInput { width: 40px; background: transparent; border: 0.5px solid transparent; color: inherit; font-family: var(--mono); font-size: 11px; padding: 2px 4px; text-align: center; outline: none; }
+.numInput:focus { border-color: var(--border2); background: var(--bg2); }
+.teamInput { width: 160px; background: transparent; border: 0.5px solid transparent; color: inherit; font-family: var(--mono); font-size: 11px; padding: 2px 4px; outline: none; }
+.teamInput:focus { border-color: var(--border2); background: var(--bg2); }
+.pts { font-family: var(--cond); font-size: 14px; font-weight: 700; }
+.error { font-size: 11px; color: #e05252; letter-spacing: 0.5px; margin-top: 6px; }
+.success { font-size: 11px; color: #4caf80; letter-spacing: 0.5px; margin-top: 6px; }
+.updated { font-size: 9px; color: var(--text-dimmer); letter-spacing: 1px; margin-top: 8px; }
+.existingSection { margin-top: 4px; }
+.previewSection { margin-top: 4px; }

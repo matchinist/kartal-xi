@@ -1,0 +1,76 @@
+.wrap { display: flex; flex-direction: column; gap: 12px; }
+
+.controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+.formationPicker { display: flex; gap: 4px; flex-wrap: wrap; }
+.fBtn { background: transparent; border: 0.5px solid var(--border2); color: #fff; padding: 5px 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
+.fBtn:hover { border-color: #555; }
+.fActive { background: var(--red); border-color: var(--red); color: #fff; }
+
+.statusPicker { display: flex; gap: 4px; }
+.statusBtn { background: transparent; border: 0.5px solid var(--border2); color: #fff; padding: 5px 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; cursor: pointer; transition: all 0.2s; }
+.statusActive { background: #1a1a1a; border-color: #555; }
+.statusOfficial { background: var(--red); border-color: var(--red); }
+
+.layout { display: grid; grid-template-columns: 1fr 190px; gap: 12px; align-items: start; }
+
+.pitchWrap { display: flex; flex-direction: column; gap: 8px; }
+
+.pitch {
+  position: relative; width: 100%; padding-bottom: 130%;
+  background: #1a3a1a; border: 1px solid #2a5a2a;
+  border-radius: 4px; overflow: hidden;
+}
+
+.centerCircle { position: absolute; width: 28%; padding-bottom: 28%; border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.centerLine { position: absolute; width: 100%; height: 1px; background: rgba(255,255,255,0.1); top: 50%; }
+.penaltyTop { position: absolute; width: 50%; height: 16%; border: 1px solid rgba(255,255,255,0.1); border-top: none; top: 0; left: 25%; }
+.penaltyBottom { position: absolute; width: 50%; height: 16%; border: 1px solid rgba(255,255,255,0.1); border-bottom: none; bottom: 0; left: 25%; }
+.goalTop { position: absolute; width: 22%; height: 5%; border: 1px solid rgba(255,255,255,0.1); border-top: none; top: 0; left: 39%; }
+.goalBottom { position: absolute; width: 22%; height: 5%; border: 1px solid rgba(255,255,255,0.1); border-bottom: none; bottom: 0; left: 39%; }
+
+.slot { position: absolute; transform: translate(-50%,-50%); width: 15%; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: grab; z-index: 2; }
+.slot:active { cursor: grabbing; }
+.slotEmpty { cursor: default; }
+.slotTarget .slotLabel { border-color: var(--red); color: var(--red); background: rgba(204,34,0,0.1); }
+
+.slotAvatar { width: 44px; height: 44px; border-radius: 50%; background: #000; border: 1px solid var(--red); display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff; font-weight: 700; font-family: var(--mono); }
+.jerseyNum { font-size: 15px; font-family: var(--cond); font-weight: 900; color: #fff; }
+
+.slotName { font-size: 12px; color: #fff; font-family: var(--mono); white-space: nowrap; background: rgba(0,0,0,0.82); padding: 2px 5px; border-radius: 2px; max-width: 76px; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+
+.slotLabel { width: 44px; height: 44px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 9px; color: rgba(255,255,255,0.25); font-family: var(--mono); transition: all 0.2s; }
+
+/* SUBS ZONE */
+.subsZone {
+  background: #0d0d0d; border: 0.5px dashed var(--border2);
+  border-radius: 4px; padding: 10px 12px; min-height: 60px;
+}
+.subsZoneLabel { font-size: 9px; letter-spacing: 1.5px; color: var(--text-dimmer); text-transform: uppercase; margin-bottom: 8px; }
+.subsList { display: flex; flex-direction: column; gap: 3px; }
+.subsEmpty { font-size: 10px; color: var(--text-dimmer); letter-spacing: 0.5px; }
+
+.subChip { display: flex; align-items: center; gap: 8px; padding: 5px 8px; background: var(--bg3); border: 0.5px solid var(--border2); cursor: grab; transition: all 0.15s; }
+.subChip:hover { border-color: #555; }
+.subNum { font-family: var(--cond); font-size: 14px; color: var(--red); min-width: 20px; }
+.subName { font-size: 11px; color: #fff; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.subPos { font-size: 9px; color: var(--text-dimmer); letter-spacing: 1px; text-transform: uppercase; }
+
+/* PLAYER LIST */
+.playerList { background: var(--bg2); border: 0.5px solid var(--border); padding: 12px; max-height: 600px; overflow-y: auto; }
+.playerListTitle { font-size: 10px; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; margin-bottom: 4px; }
+.playerListHint { font-size: 9px; color: var(--text-dimmer); letter-spacing: 0.5px; margin-bottom: 10px; }
+
+.posGroup { margin-bottom: 10px; }
+.posLabel { font-size: 8px; letter-spacing: 2px; color: var(--text-dimmer); text-transform: uppercase; margin-bottom: 4px; padding-bottom: 3px; border-bottom: 0.5px solid var(--border); }
+
+.playerChip { display: flex; align-items: center; gap: 6px; padding: 5px 8px; margin-bottom: 2px; background: var(--bg3); border: 0.5px solid var(--border2); cursor: grab; transition: all 0.15s; }
+.playerChip:hover { border-color: #555; }
+.playerChip:active { cursor: grabbing; }
+.placed { opacity: 0.35; cursor: not-allowed; }
+
+.chipNum { font-size: 11px; color: var(--red); min-width: 20px; font-family: var(--cond); font-weight: 700; }
+.chipName { font-size: 11px; color: #fff; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chipCheck { font-size: 9px; color: #4caf80; }
+
+.counter { font-size: 10px; color: #fff; letter-spacing: 1px; text-align: center; }

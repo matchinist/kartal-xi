@@ -1,0 +1,55 @@
+.wrap { display: flex; flex-direction: column; gap: 16px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.fieldSmall { display: flex; flex-direction: column; gap: 6px; width: 90px; }
+.field label, .fieldSmall label { font-size: 9px; letter-spacing: 2px; color: #fff; text-transform: uppercase; }
+
+.input {
+  background: var(--bg2); border: 0.5px solid var(--border2);
+  color: #fff; padding: 9px 12px;
+  font-family: var(--mono); font-size: 12px; outline: none; width: 100%;
+}
+.input:focus { border-color: var(--red-dim); }
+.input option { background: var(--bg2); }
+
+.addRow {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.btnAdd {
+  background: var(--red); color: #fff;
+  border: none; padding: 9px 16px;
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; cursor: pointer;
+  white-space: nowrap; height: 38px;
+  transition: opacity 0.2s;
+}
+.btnAdd:disabled { opacity: 0.5; }
+
+.goalList { display: flex; flex-direction: column; gap: 1px; }
+
+.goalRow {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg2); padding: 10px 14px;
+}
+
+.minute {
+  font-family: var(--cond); font-size: 18px; color: var(--red);
+  min-width: 36px;
+}
+
+.scorer { flex: 1; font-size: 12px; color: #fff; }
+
+.btnDel {
+  background: transparent; color: #666;
+  border: 0.5px solid var(--border2); padding: 3px 10px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: 1px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btnDel:hover { color: var(--red); border-color: var(--red-dim); }
+
+.empty { font-size: 11px; color: var(--text-dimmer); letter-spacing: 1px; padding: 8px 0; }
+.error { font-size: 11px; color: #ff4444; }
+.success { font-size: 11px; color: #4caf80; }

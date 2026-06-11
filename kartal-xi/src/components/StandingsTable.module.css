@@ -1,0 +1,49 @@
+.wrap { padding: 0 0 8px; }
+.tableWrap { overflow-x: auto; }
+
+.table { width: 100%; border-collapse: collapse; font-size: 12px; }
+
+.table thead th {
+  padding: 8px 8px; font-size: 9px; letter-spacing: 1.5px;
+  color: #fff; text-transform: uppercase;
+  border-bottom: 0.5px solid var(--border); font-weight: normal; text-align: center;
+}
+.thTeam { text-align: left !important; padding-left: 12px !important; }
+.thPos { min-width: 28px; }
+.thNum { min-width: 32px; }
+.thPts { min-width: 32px; }
+.thH2h { min-width: 50px; border-left: 0.5px solid var(--border) !important; }
+
+.table tbody tr { border-bottom: 0.5px solid var(--border); transition: background 0.15s; }
+.table tbody tr:hover { background: #0f0f0f; }
+.table tbody tr:last-child { border-bottom: none; }
+.bjkRow { background: #110000 !important; }
+.bjkRow:hover { background: #180000 !important; }
+
+.tdPos { padding: 9px 8px; color: #fff; font-size: 11px; text-align: center; }
+.europe { color: #4a8fd4; }
+.bjkAccent { color: var(--red) !important; }
+
+.tdTeam { padding: 9px 8px 9px 12px; color: #fff; white-space: nowrap; font-size: 12px; }
+.tdNum { padding: 9px 6px; color: #fff; text-align: center; font-size: 12px; }
+.tdPts { padding: 9px 8px; font-family: var(--cond); font-size: 16px; color: #fff; text-align: center; font-weight: 700; }
+
+.tdH2h { padding: 5px 4px; text-align: center; border-left: 0.5px solid var(--border); }
+
+.h2hBadge { display: inline-flex; flex-direction: column; align-items: center; padding: 2px 5px; border-radius: 2px; min-width: 36px; border: 0.5px solid; }
+.h2hW { background: #0d2e1a; color: #4caf80; border-color: #1a5c35; }
+.h2hD { background: #1e1e00; color: #c8c800; border-color: #3a3a00; }
+.h2hL { background: #2e0000; color: #ff4444; border-color: #660000; }
+.h2hResult { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; }
+.h2hScore { font-size: 8px; opacity: 0.85; font-family: var(--mono); }
+.h2hPending { font-size: 8px; color: #555; border: 0.5px solid var(--border2); padding: 3px 5px; border-radius: 2px; }
+.h2hEmpty { color: #333; font-size: 10px; text-align: center; }
+.h2hSelf { color: #333; font-size: 10px; text-align: center; }
+
+/* Hide detail columns on mobile */
+@media (max-width: 640px) {
+  .desktopOnly { display: none; }
+  .table { font-size: 11px; }
+  .tdTeam { max-width: 100px; overflow: hidden; text-overflow: ellipsis; padding-left: 8px !important; }
+  .thTeam { padding-left: 8px !important; }
+}

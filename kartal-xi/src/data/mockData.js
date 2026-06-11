@@ -7,19 +7,21 @@ export const nextMatch = {
 };
 
 export const seasonStats = [
-  { key: 'Matches played', value: '38', sub: 'All comps' },
-  { key: 'Goals scored',   value: '62', delta: '+8 vs last season', up: true },
-  { key: 'Goals conceded', value: '34', delta: 'Best in 4 yrs',     up: true },
-  { key: 'Avg possession', value: '54%', delta: '+3% vs last season', up: true },
-  { key: 'xG total',       value: '54.2', delta: 'Overperforming',  up: true },
+  { key: 'Toplam Mac',      value: '38' },
+  { key: 'Galibiyet',       value: '22' },
+  { key: 'Beraberlik',      value: '8'  },
+  { key: 'Maglubiyet',      value: '8'  },
+  { key: 'Atilan Gol',      value: '62' },
+  { key: 'Yenilen Gol',     value: '34' },
+  { key: 'Puan Ortalamasi', value: '1.7' },
 ];
 
 export const recentMatches = [
-  { comp: 'SL',  home: 'Beşiktaş',   away: 'Trabzonspor', hs: 3, as: 1, result: 'W', date: 'Jun 1'  },
-  { comp: 'UCL', home: 'Porto',       away: 'Beşiktaş',   hs: 2, as: 2, result: 'D', date: 'May 28' },
-  { comp: 'SL',  home: 'Beşiktaş',   away: 'Fenerbahçe', hs: 2, as: 0, result: 'W', date: 'May 22' },
-  { comp: 'TC',  home: 'Galatasaray', away: 'Beşiktaş',   hs: 1, as: 0, result: 'L', date: 'May 15' },
-  { comp: 'SL',  home: 'Beşiktaş',   away: 'Kayserispor', hs: 4, as: 1, result: 'W', date: 'May 8'  },
+  { comp: 'SL',  home: 'Beşiktaş',    away: 'Trabzonspor',  hs: 3, as: 1, result: 'W', date: 'Jun 1'  },
+  { comp: 'UCL', home: 'Porto',        away: 'Beşiktaş',     hs: 2, as: 2, result: 'D', date: 'May 28' },
+  { comp: 'SL',  home: 'Beşiktaş',    away: 'Fenerbahçe',   hs: 2, as: 0, result: 'W', date: 'May 22' },
+  { comp: 'TC',  home: 'Galatasaray',  away: 'Beşiktaş',     hs: 1, as: 0, result: 'L', date: 'May 15' },
+  { comp: 'SL',  home: 'Beşiktaş',    away: 'Kayserispor',  hs: 4, as: 1, result: 'W', date: 'May 8'  },
 ];
 
 export const topScorers = [
