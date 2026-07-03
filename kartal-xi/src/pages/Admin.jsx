@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import PitchLineup from '../components/PitchLineup';
-import StandingsAdmin from '../components/StandingsAdmin';
+import GoalTimeline from '../components/GoalTimeline';
+import { CLUBS } from '../data/clubs';
 import { countries } from '../data/countries';
 import styles from './Admin.module.css';
 
 const ALLOWED_EMAIL = 'ercanvural.bm@gmail.com';
-const TOURNAMENTS = ['Süper Lig','UEFA Conference League','UEFA Champions League','UEFA Europa League','Türkiye Kupası','Süper Kupa'];
+
 const POZISYONLAR = ['Kaleci','Defans','Ortasaha','Forvet'];
 
-const emptyMatch = { home_team:'',away_team:'',match_date:'',tournament:'Süper Lig',stadium:'',status:'scheduled' };
+const emptyMatch = { home_team:'',away_team:'',match_date:'',tournament:'',stadium:'',status:'scheduled',season:'2025/26' };
 const emptyPlayer = { ad_soyad:'',ulke:'',dogum_tarihi:'',pozisyon:'Kaleci',jersey_number:'',bjk_total_games:'',market_value:'',boy:'' };
 
 export default function Admin() {
@@ -19,11 +20,16 @@ export default function Admin() {
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [tab, setTab] = useState('maclar');
+  const [activeClub, setActiveClub] = useState(CLUBS[0]);
 
   const [matchForm, setMatchForm] = useState(emptyMatch);
   const [matches, setMatches] = useState([]);
   const [matchSaving, setMatchSaving] = useState(false);
   const [matchMsg, setMatchMsg] = useState('');
+  const [editingMatch, setEditingMatch] = useState(null);
+  const [editMatchForm, setEditMatchForm] = useState(null);
+  const [editMatchSaving, setEditMatchSaving] = useState(false);
+  const [editMatchMsg, setEditMatchMsg] = useState('');
 
   const [playerForm, setPlayerForm] = useState(emptyPlayer);
   const [players, setPlayers] = useState([]);
@@ -44,11 +50,14 @@ export default function Admin() {
   const [mvPlayerId, setMvPlayerId] = useState('');
   const [mvMinute, setMvMinute] = useState('');
   const [mvGoalSaving, setMvGoalSaving] = useState(false);
+  const [mvGoalType, setMvGoalType] = useState('normal');
   const [mvGoalMsg, setMvGoalMsg] = useState('');
   const [mvHomeScore, setMvHomeScore] = useState('');
   const [mvAwayScore, setMvAwayScore] = useState('');
   const [mvScoreSaving, setMvScoreSaving] = useState(false);
   const [mvScoreMsg, setMvScoreMsg] = useState('');
+  const [resetting, setResetting] = useState(false);
+  const [resetMsg, setResetMsg] = useState('');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => { setSession(session); setLoading(false); });
@@ -56,14 +65,14 @@ export default function Admin() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => { if (session) { fetchMatches(); fetchPlayers(); } }, [session]);
+  useEffect(() => { if (session) { fetchMatches(); fetchPlayers(); } }, [session, activeClub]);
 
   async function fetchMatches() {
-    const { data } = await supabase.from('matches').select('*').order('match_date', { ascending: false });
+    const { data } = await supabase.from('matches').select('*').eq('club_id', activeClub.id).order('match_date', { ascending: false });
     setMatches(data || []);
   }
   async function fetchPlayers() {
-    const { data } = await supabase.from('players').select('*').order('jersey_number');
+    const { data } = await supabase.from('players').select('*').eq('club_id', activeClub.id).order('jersey_number');
     setPlayers(data || []);
   }
   async function loadMatchData(matchId) {
@@ -75,12 +84,11 @@ export default function Admin() {
     const ld = ldArr?.[0] || null;
     if (ld) { setMvLineup({ formation: ld.formation, slots: ld.slots, subs: ld.subs || {}, status: ld.status || 'expected' }); setMvLineupId(ld.id); }
     else { setMvLineup({ formation:'4-3-3', slots:{}, subs:{}, status:'expected' }); setMvLineupId(null); }
-    const { data: gd } = await supabase.from('goal_scorers').select('*, players(ad_soyad)').eq('match_id', matchId).order('minute');
-    setMvGoals(gd || []);
   }
   async function handleMatchSubmit(e) {
-    e.preventDefault(); setMatchSaving(true); setMatchMsg('');
-    const { error } = await supabase.from('matches').insert([matchForm]);
+    e.preventDefault();
+setMatchSaving(true); setMatchMsg('');
+    const { error } = await supabase.from('matches').insert([{ ...matchForm, club_id: activeClub.id }]);
     if (error) setMatchMsg('Hata: ' + error.message);
     else { setMatchMsg('Maç eklendi.'); setMatchForm(emptyMatch); fetchMatches(); }
     setMatchSaving(false);
@@ -89,9 +97,32 @@ export default function Admin() {
     if (!confirm('Sil?')) return;
     await supabase.from('matches').delete().eq('id', id); fetchMatches();
   }
+  function openEditMatch(m) {
+    setEditingMatch(m.id);
+    setEditMatchForm({ ...m, match_date: m.match_date ? m.match_date.slice(0,16) : '' });
+    setEditMatchMsg('');
+  }
+
+  async function handleEditMatchSave() {
+    setEditMatchSaving(true); setEditMatchMsg('');
+    const { error } = await supabase.from('matches').update({
+      home_team: editMatchForm.home_team,
+      away_team: editMatchForm.away_team,
+      match_date: editMatchForm.match_date,
+      tournament: editMatchForm.tournament,
+      stadium: editMatchForm.stadium,
+      status: editMatchForm.status,
+      home_score: editMatchForm.home_score !== '' && editMatchForm.home_score != null ? parseInt(editMatchForm.home_score) : null,
+      away_score: editMatchForm.away_score !== '' && editMatchForm.away_score != null ? parseInt(editMatchForm.away_score) : null,
+    }).eq('id', editingMatch);
+    if (error) setEditMatchMsg('Hata: ' + error.message);
+    else { setEditMatchMsg('Kaydedildi.'); fetchMatches(); setTimeout(() => setEditingMatch(null), 800); }
+    setEditMatchSaving(false);
+  }
+
   async function handlePlayerSubmit(e) {
     e.preventDefault(); setPlayerSaving(true); setPlayerMsg('');
-    const payload = { ...playerForm, jersey_number: playerForm.jersey_number !== '' ? parseInt(playerForm.jersey_number) : null, bjk_total_games: playerForm.bjk_total_games !== '' ? parseInt(playerForm.bjk_total_games) : 0, boy: playerForm.boy !== '' ? parseInt(playerForm.boy) : null };
+    const payload = { ...playerForm, club_id: activeClub.id, jersey_number: playerForm.jersey_number !== '' ? parseInt(playerForm.jersey_number) : null, bjk_total_games: playerForm.bjk_total_games !== '' ? parseInt(playerForm.bjk_total_games) : 0, boy: playerForm.boy !== '' ? parseInt(playerForm.boy) : null };
     const { error } = await supabase.from('players').insert([payload]);
     if (error) setPlayerMsg('Hata: ' + error.message);
     else { setPlayerMsg('Oyuncu eklendi.'); setPlayerForm(emptyPlayer); fetchPlayers(); }
@@ -123,18 +154,6 @@ export default function Admin() {
     setMvLineupMsg(error ? 'Hata: ' + error.message : 'Kadro kaydedildi.');
     setMvLineupSaving(false);
   }
-  async function handleAddGoal() {
-    if (!mvMatchId || !mvPlayerId || !mvMinute) { setMvGoalMsg('Tum alanlari doldurun.'); return; }
-    setMvGoalSaving(true); setMvGoalMsg('');
-    const { error } = await supabase.from('goal_scorers').insert([{ match_id: mvMatchId, player_id: mvPlayerId, minute: parseInt(mvMinute) }]);
-    if (error) setMvGoalMsg('Hata: ' + error.message);
-    else { setMvGoalMsg('Gol eklendi.'); setMvPlayerId(''); setMvMinute(''); loadMatchData(mvMatchId); }
-    setMvGoalSaving(false);
-  }
-  async function handleDeleteGoal(id) {
-    if (!confirm('Sil?')) return;
-    await supabase.from('goal_scorers').delete().eq('id', id); loadMatchData(mvMatchId);
-  }
   async function handleScoreSave() {
     if (!mvMatchId) return; setMvScoreSaving(true); setMvScoreMsg('');
     const { error } = await supabase.from('matches').update({ home_score: mvHomeScore !== '' ? parseInt(mvHomeScore) : null, away_score: mvAwayScore !== '' ? parseInt(mvAwayScore) : null }).eq('id', mvMatchId);
@@ -142,6 +161,19 @@ export default function Admin() {
     else { setMvScoreMsg('Skor kaydedildi.'); fetchMatches(); }
     setMvScoreSaving(false);
   }
+  async function handleResetMatchData() {
+    if (!mvMatchId) return;
+    if (!window.confirm('Bu maçın tüm tahmin verileri ve puanları silinecek. Emin misin?')) return;
+    setResetting(true); setResetMsg('');
+    await supabase.from('user_points').delete().eq('match_id', mvMatchId);
+    await supabase.from('lineup_predictions').delete().eq('club_id', activeClub.id);
+    await supabase.from('lineups').delete().eq('match_id', mvMatchId);
+    setMvLineup({ formation:'4-3-3', slots:{}, subs:{}, status:'expected' });
+    setMvLineupId(null);
+    setResetMsg('Tüm veriler sıfırlandı.');
+    setResetting(false);
+  }
+
   async function handleLogout() { await supabase.auth.signOut(); }
 
   if (loading) return <div className={styles.center}>// yükleniyor...</div>;
@@ -177,8 +209,22 @@ export default function Admin() {
         </div>
       </div>
 
+      <div className={styles.clubSelector}>
+        {CLUBS.map(c => (
+          <button
+            key={c.id}
+            className={`${styles.clubBtn} ${activeClub.id === c.id ? styles.clubBtnActive : ''}`}
+            style={activeClub.id === c.id ? { borderColor: c.color, color: c.color } : {}}
+            onClick={() => setActiveClub(c)}
+            type="button"
+          >
+            {c.short}
+          </button>
+        ))}
+      </div>
+
       <div className={styles.tabs}>
-        {[['maclar','Maçlar'],['oyuncular','Oyuncular'],['mac-verisi','Maç Verisi'],['puan','Puan Tablosu']].map(([key,label]) => (
+        {[['maclar','Maçlar'],['oyuncular','Oyuncular'],['mac-verisi','Maç Verisi']].map(([key,label]) => (
           <button key={key} className={`${styles.tabBtn} ${tab === key ? styles.tabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
         ))}
       </div>
@@ -195,11 +241,15 @@ export default function Admin() {
               </div>
               <div className={styles.row}>
                 <div className={styles.field}><label>Tarih & Saat</label><input className={styles.input} type="datetime-local" value={matchForm.match_date} onChange={e => setMatchForm(f=>({...f,match_date:e.target.value}))} required /></div>
-                <div className={styles.field}><label>Turnuva</label><select className={styles.input} value={matchForm.tournament} onChange={e => setMatchForm(f=>({...f,tournament:e.target.value}))}>{TOURNAMENTS.map(t=><option key={t}>{t}</option>)}</select></div>
+                <div className={styles.field}><label>Tournament</label><input className={styles.input} value={matchForm.tournament} onChange={e => setMatchForm(f=>({...f,tournament:e.target.value}))} placeholder="e.g. Premier League" /></div>
               </div>
               <div className={styles.row}>
                 <div className={styles.field}><label>Stadyum</label><input className={styles.input} value={matchForm.stadium} onChange={e => setMatchForm(f=>({...f,stadium:e.target.value}))} placeholder="Tüpraş Stadyumu" /></div>
                 <div className={styles.field}><label>Durum</label><select className={styles.input} value={matchForm.status} onChange={e => setMatchForm(f=>({...f,status:e.target.value}))}><option value="scheduled">Planlandı</option><option value="live">Canlı</option><option value="finished">Tamamlandı</option></select></div>
+              </div>
+              <div className={styles.row}>
+                <div className={styles.field}><label>Sezon</label><select className={styles.input} value={matchForm.season||'2025/26'} onChange={e => setMatchForm(f=>({...f,season:e.target.value}))}><option value="2025/26">2025/26</option><option value="2026/27">2026/27</option></select></div>
+                <div className={styles.field}></div>
               </div>
               {matchMsg && <div className={matchMsg.startsWith('Hata')?styles.error:styles.success}>{matchMsg}</div>}
               <button className={styles.btn} type="submit" disabled={matchSaving}>{matchSaving?'Kaydediliyor...':'Maç Ekle'}</button>
@@ -215,7 +265,10 @@ export default function Admin() {
                     <span className={styles.matchMeta}>{m.tournament} · {new Date(m.match_date).toLocaleString('tr-TR')} · {m.status}</span>
                     {m.home_score !== null && m.home_score !== undefined && <span className={styles.matchScore}>{m.home_score} – {m.away_score}</span>}
                   </div>
-                  <button className={styles.btnDelete} onClick={() => handleDeleteMatch(m.id)}>Sil</button>
+                  <div style={{display:'flex',gap:'6px'}}>
+                    <button className={styles.btnEdit} onClick={() => openEditMatch(m)}>Düzenle</button>
+                    <button className={styles.btnDelete} onClick={() => handleDeleteMatch(m.id)}>Sil</button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -232,10 +285,18 @@ export default function Admin() {
               <div className={styles.row}>
                 <div className={styles.field}><label>Ad Soyad</label><input className={styles.input} value={playerForm.ad_soyad} onChange={e=>setPlayerForm(f=>({...f,ad_soyad:e.target.value}))} placeholder="Rafa Silva" required /></div>
                 <div className={styles.field}><label>Ülke</label>
-                  <select className={styles.input} value={playerForm.ulke} onChange={e=>setPlayerForm(f=>({...f,ulke:e.target.value}))} required>
-                    <option value="">Seçiniz...</option>
+                  <input
+                    className={styles.input}
+                    list="countries-list"
+                    value={playerForm.ulke}
+                    onChange={e=>setPlayerForm(f=>({...f,ulke:e.target.value}))}
+                    placeholder="Ülke ara..."
+                    required
+                    autoComplete="off"
+                  />
+                  <datalist id="countries-list">
                     {countries.map(c=><option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
-                  </select>
+                  </datalist>
                 </div>
               </div>
               <div className={styles.row}>
@@ -256,20 +317,27 @@ export default function Admin() {
           </div>
           <div className={styles.section}>
             <div className={styles.sectionTitle}>Kadro ({players.length})</div>
-            <div className={styles.matchList}>
-              {players.map(p => (
-                <div className={styles.matchRow} key={p.id}>
-                  <div className={styles.matchInfo}>
-                    <span className={styles.matchTeams}>{p.jersey_number != null ? p.jersey_number + '. ' : ''}{p.ad_soyad}</span>
-                    <span className={styles.matchMeta}>{p.pozisyon} · {p.ulke} · {p.boy ? p.boy+'cm · ' : ''}{p.market_value || ''}</span>
-                  </div>
-                  <div style={{display:'flex',gap:'6px'}}>
-                    <button className={styles.btnEdit} onClick={() => openEdit(p)}>Düzenle</button>
-                    <button className={styles.btnDelete} onClick={() => handleDeletePlayer(p.id)}>Sil</button>
-                  </div>
+            {['Forvet','Ortasaha','Defans','Kaleci'].map(pos => {
+              const group = players.filter(p => p.pozisyon === pos);
+              if (!group.length) return null;
+              return (
+                <div key={pos} className={styles.posGroup}>
+                  <div className={styles.posGroupLabel}>{pos}</div>
+                  {group.map(p => (
+                    <div className={styles.matchRow} key={p.id}>
+                      <div className={styles.matchInfo}>
+                        <span className={styles.matchTeams}>{p.jersey_number != null ? p.jersey_number + '. ' : ''}{p.ad_soyad}</span>
+                        <span className={styles.matchMeta}>{p.ulke} · {p.boy ? p.boy+'cm · ' : ''}{p.market_value || ''}{p.dogum_tarihi ? ' · ' + new Date(p.dogum_tarihi).toLocaleDateString('tr-TR') : ''}</span>
+                      </div>
+                      <div style={{display:'flex',gap:'6px'}}>
+                        <button className={styles.btnEdit} onClick={() => openEdit(p)}>Düzenle</button>
+                        <button className={styles.btnDelete} onClick={() => handleDeletePlayer(p.id)}>Sil</button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
         </>
       )}
@@ -303,36 +371,23 @@ export default function Admin() {
             {/* GOLLER */}
             <div className={styles.subSection}>
               <div className={styles.subSectionTitle}>Goller</div>
-              <div className={styles.addRow}>
-                <div className={styles.field}><label>Golcü</label>
-                  <select className={styles.input} value={mvPlayerId} onChange={e=>setMvPlayerId(e.target.value)}>
-                    <option value="">Oyuncu...</option>
-                    {players.map(p=><option key={p.id} value={p.id}>{p.jersey_number ? p.jersey_number+'. ' : ''}{p.ad_soyad}</option>)}
-                  </select>
-                </div>
-                <div className={styles.fieldSmall}><label>Dakika</label><input className={styles.input} type="number" min="1" max="120" value={mvMinute} onChange={e=>setMvMinute(e.target.value)} placeholder="45" /></div>
-                <button className={styles.btnAdd} onClick={handleAddGoal} disabled={mvGoalSaving} type="button">{mvGoalSaving?'...':'+ Ekle'}</button>
-              </div>
-              {mvGoalMsg && <div className={mvGoalMsg.startsWith('Hata')?styles.error:styles.success}>{mvGoalMsg}</div>}
-              <div className={styles.goalList}>
-                {mvGoals.length === 0 && <div className={styles.empty}>Henüz gol yok.</div>}
-                {mvGoals.map(g => (
-                  <div className={styles.goalRow} key={g.id}>
-                    <span className={styles.minute}>{g.minute}'</span>
-                    <span className={styles.scorer}>{g.players?.ad_soyad || '—'}</span>
-                    <button className={styles.btnDelete} onClick={() => handleDeleteGoal(g.id)}>Sil</button>
-                  </div>
-                ))}
-              </div>
+              <GoalTimeline
+                matchId={mvMatchId}
+                matchHome={mvMatch?.home_team}
+                matchAway={mvMatch?.away_team}
+                players={players}
+              />
             </div>
 
-            {/* KADRO */}
+                        {/* KADRO */}
             <div className={styles.subSection}>
               <div className={styles.subSectionTitle}>Kadro</div>
               <PitchLineup players={players} value={mvLineup} onChange={setMvLineup} />
-              <div style={{display:'flex',alignItems:'center',gap:'12px',marginTop:'12px'}}>
+              <div style={{display:'flex',alignItems:'center',gap:'12px',marginTop:'12px',flexWrap:'wrap'}}>
                 <button className={styles.btn} onClick={handleLineupSave} disabled={mvLineupSaving} type="button">{mvLineupSaving?'Kaydediliyor...':mvLineupId?'Güncelle':'Kaydet'}</button>
+                <button className={styles.btnDanger} onClick={handleResetMatchData} disabled={!mvMatchId||resetting} type="button">{resetting?'Sıfırlanıyor...':'Maç Verilerini Sıfırla'}</button>
                 {mvLineupMsg && <div className={mvLineupMsg.startsWith('Hata')?styles.error:styles.success}>{mvLineupMsg}</div>}
+                {resetMsg && <div className={resetMsg.startsWith('Hata')?styles.error:styles.success}>{resetMsg}</div>}
               </div>
             </div>
           </>}
@@ -341,12 +396,6 @@ export default function Admin() {
       )}
 
       {/* PUAN TABLOSU */}
-      {tab === 'puan' && (
-        <div className={styles.section}>
-          <div className={styles.sectionTitle}>Puan Tablosu</div>
-          <StandingsAdmin />
-        </div>
-      )}
 
       {/* EDIT MODAL */}
       {editingPlayer && editForm && (
@@ -357,10 +406,17 @@ export default function Admin() {
               <div className={styles.row}>
                 <div className={styles.field}><label>Ad Soyad</label><input className={styles.input} value={editForm.ad_soyad} onChange={e=>setEditForm(f=>({...f,ad_soyad:e.target.value}))} /></div>
                 <div className={styles.field}><label>Ülke</label>
-                  <select className={styles.input} value={editForm.ulke} onChange={e=>setEditForm(f=>({...f,ulke:e.target.value}))}>
-                    <option value="">Seçiniz...</option>
+                  <input
+                    className={styles.input}
+                    list="countries-list-edit"
+                    value={editForm.ulke}
+                    onChange={e=>setEditForm(f=>({...f,ulke:e.target.value}))}
+                    placeholder="Ülke ara..."
+                    autoComplete="off"
+                  />
+                  <datalist id="countries-list-edit">
                     {countries.map(c=><option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
-                  </select>
+                  </datalist>
                 </div>
               </div>
               <div className={styles.row}>
@@ -384,6 +440,35 @@ export default function Admin() {
           </div>
         </div>
       )}
+
+      {editingMatch && editMatchForm && (
+        <div className={styles.modalOverlay} onClick={() => setEditingMatch(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalTitle}>Maç Düzenle</div>
+            <div className={styles.form}>
+              <div className={styles.row}>
+                <div className={styles.field}><label>Ev Sahibi</label><input className={styles.input} value={editMatchForm.home_team} onChange={e=>setEditMatchForm(f=>({...f,home_team:e.target.value}))} /></div>
+                <div className={styles.field}><label>Deplasman</label><input className={styles.input} value={editMatchForm.away_team} onChange={e=>setEditMatchForm(f=>({...f,away_team:e.target.value}))} /></div>
+              </div>
+              <div className={styles.row}>
+                <div className={styles.field}><label>Tarih & Saat</label><input className={styles.input} type="datetime-local" value={editMatchForm.match_date} onChange={e=>setEditMatchForm(f=>({...f,match_date:e.target.value}))} /></div>
+                <div className={styles.field}><label>Tournament</label><input className={styles.input} value={editMatchForm.tournament} onChange={e=>setEditMatchForm(f=>({...f,tournament:e.target.value}))} placeholder="e.g. Premier League" /></div>
+              </div>
+              <div className={styles.row}>
+                <div className={styles.field}><label>Stadyum</label><input className={styles.input} value={editMatchForm.stadium||''} onChange={e=>setEditMatchForm(f=>({...f,stadium:e.target.value}))} /></div>
+                <div className={styles.field}><label>Durum</label><select className={styles.input} value={editMatchForm.status} onChange={e=>setEditMatchForm(f=>({...f,status:e.target.value}))}><option value="scheduled">Planlandı</option><option value="live">Canlı</option><option value="finished">Tamamlandı</option></select></div>
+              </div>
+              {editMatchMsg && <div className={editMatchMsg.startsWith('Hata')?styles.error:styles.success}>{editMatchMsg}</div>}
+              <div style={{display:'flex',gap:'8px'}}>
+                <button className={styles.btn} onClick={handleEditMatchSave} disabled={editMatchSaving} type="button">{editMatchSaving?'Kaydediliyor...':'Kaydet'}</button>
+                <button className={styles.btnSmall} onClick={()=>setEditingMatch(null)} type="button">İptal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 }
