@@ -38,7 +38,7 @@ export default function Navbar({ activeClub, onClubChange }) {
     <>
       <nav className={styles.nav}>
         <div className={styles.navLeft}>
-          <button className={styles.backBtn} onClick={() => navigate('/')} title="Ana Sayfa">
+          <button className={styles.backBtn} onClick={() => navigate('/')} title="Home">
             ←
           </button>
           <NavLink to={basePath} className={styles.logo}>
@@ -76,7 +76,7 @@ export default function Navbar({ activeClub, onClubChange }) {
           )}
 
           {!session && (
-            <button className={styles.authBtn} onClick={() => setShowAuth(true)}>Giriş Yap</button>
+            <button className={styles.authBtn} onClick={() => setShowAuth(true)}>Login</button>
           )}
 
           <div className={styles.menuWrap} ref={menuRef}>
@@ -87,13 +87,13 @@ export default function Navbar({ activeClub, onClubChange }) {
             </button>
             {menuOpen && (
               <div className={styles.menuPopup}>
-                <NavLink to={`${basePath}/leaderboard`} className={styles.menuLink} onClick={() => setMenuOpen(false)}>Liderlik</NavLink>
-                <NavLink to={`${basePath}/settings`} className={styles.menuLink} onClick={() => setMenuOpen(false)}>Ayarlar</NavLink>
+                <NavLink to={`${basePath}/leaderboard`} className={styles.menuLink} onClick={() => setMenuOpen(false)}>Leaderboard</NavLink>
+                <NavLink to={`${basePath}/settings`} className={styles.menuLink} onClick={() => setMenuOpen(false)}>Settings</NavLink>
                 {session && (
                   <>
                     <div className={styles.menuDivider} />
                     <div className={styles.menuUser}>{session.user.email}</div>
-                    <button className={styles.menuLogout} onClick={() => { supabase.auth.signOut(); setMenuOpen(false); }}>Çıkış Yap</button>
+                    <button className={styles.menuLogout} onClick={() => { supabase.auth.signOut(); setMenuOpen(false); }}>Logout</button>
                   </>
                 )}
               </div>

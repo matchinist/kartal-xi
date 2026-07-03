@@ -19,7 +19,7 @@ const POS_ORDER = ['Forward','Midfielder','Defender','Goalkeeper'];
 const POS_MAP = { 'Forvet':'Forward','Ortasaha':'Midfielder','Defans':'Defender','Kaleci':'Goalkeeper','Forward':'Forward','Midfielder':'Midfielder','Defender':'Defender','Goalkeeper':'Goalkeeper' };
 
 const COUNTRY_CODES = {
-  'Türkiye':'tr','Turkiye':'tr','Portugal':'pt','Portekiz':'pt','Argentina':'ar','Arjantin':'ar',
+  'Türkiye':'tr','Turkiye':'tr','Portugal':'pt','Portekiz':'pt','Argentina':'ar','Arjantin':'ar','ARGENTINA':'ar',
   'Brazil':'br','Brezilya':'br','France':'fr','Fransa':'fr','Germany':'de','Almanya':'de',
   'Netherlands':'nl','Hollanda':'nl','Italy':'it','İtalya':'it','Spain':'es','İspanya':'es',
   'Belgium':'be','Belçika':'be','Serbia':'rs','Sırbistan':'rs','Morocco':'ma','Fas':'ma',
@@ -38,6 +38,7 @@ const COUNTRY_CODES = {
   'Czech Republic':'cz','Çek Cumhuriyeti':'cz','Benin':'benin','Slovenia':'si','Slovenya':'si',
 };
 const CUSTOM_FLAGS = {
+  'ar':'https://flagcdn.com/w80/ar.png',
   'benin':'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Flag_of_Benin.svg/330px-Flag_of_Benin.svg.png',
 
 };

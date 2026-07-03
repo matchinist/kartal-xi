@@ -27,7 +27,7 @@ export default function AuthModal({ onClose, onSuccess }) {
 
     if (mode === 'signup') {
       if (!username.trim() || username.trim().length < 3) {
-        setError('Kullanıcı adı en az 3 karakter olmalı.'); setSaving(false); return;
+        setError('Username must be at least 3 characters.'); setSaving(false); return;
       }
       const { data: existing } = await supabase
         .from('user_profiles').select('id').eq('username', username.trim()).limit(1);
@@ -54,9 +54,9 @@ export default function AuthModal({ onClose, onSuccess }) {
   if (done) return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
-        <div className={styles.title}>E-postanı Kontrol Et</div>
-        <p className={styles.text}>Hesabını onaylamak için e-postana bir bağlantı gönderdik.</p>
-        <button className={styles.btnGhost} onClick={onClose}>Kapat</button>
+        <div className={styles.title}>Check Your Email</div>
+        <p className={styles.text}>We've sent a link to your email to confirm your account.</p>
+        <button className={styles.btnGhost} onClick={onClose}>Close</button>
       </div>
     </div>
   );
@@ -64,9 +64,9 @@ export default function AuthModal({ onClose, onSuccess }) {
   if (forgotSent) return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
-        <div className={styles.title}>E-posta Gönderildi</div>
-        <p className={styles.text}>Şifre sıfırlama bağlantısı <strong>{email}</strong> adresine gönderildi. Gelen kutunu kontrol et.</p>
-        <button className={styles.btnGhost} onClick={onClose}>Kapat</button>
+        <div className={styles.title}>Email Sent</div>
+        <p className={styles.text}>A password reset link has been sent to <strong>{email}</strong> . Check your inbox.</p>
+        <button className={styles.btnGhost} onClick={onClose}>Close</button>
       </div>
     </div>
   );
@@ -75,32 +75,32 @@ export default function AuthModal({ onClose, onSuccess }) {
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.title}>
-          {mode === 'login' ? 'Giriş Yap' : mode === 'signup' ? 'Üye Ol' : 'Şifremi Unuttum'}
+          {mode === 'login' ? 'Login' : mode === 'signup' ? 'Sign Up' : 'Forgot Password'}
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {mode === 'signup' && (
             <div className={styles.fieldWrap}>
-              <label className={styles.label}>Kullanıcı Adı</label>
+              <label className={styles.label}>Username</label>
               <input className={styles.input} type="text" placeholder="mister_ali"
                 value={username} onChange={e => setUsername(e.target.value)} required />
             </div>
           )}
           <div className={styles.fieldWrap}>
-            <label className={styles.label}>E-posta</label>
+            <label className={styles.label}>Email</label>
             <input className={styles.input} type="email" placeholder="ali@email.com"
               value={email} onChange={e => setEmail(e.target.value)} required />
           </div>
           {mode !== 'forgot' && (
             <div className={styles.fieldWrap}>
-              <label className={styles.label}>Şifre</label>
+              <label className={styles.label}>Password</label>
               <input className={styles.input} type="password" placeholder="••••••"
                 value={password} onChange={e => setPassword(e.target.value)} required minLength={6} />
             </div>
           )}
           {error && <div className={styles.error}>{error}</div>}
           <button className={styles.btn} type="submit" disabled={saving}>
-            {saving ? '...' : mode === 'login' ? 'Giriş Yap' : mode === 'signup' ? 'Üye Ol' : 'Sıfırlama Bağlantısı Gönder'}
+            {saving ? '...' : mode === 'login' ? 'Login' : mode === 'signup' ? 'Sign Up' : 'Send Reset Link'}
           </button>
         </form>
 
@@ -108,16 +108,16 @@ export default function AuthModal({ onClose, onSuccess }) {
           {mode === 'login' && (
             <>
               <button className={styles.link} onClick={() => { setMode('signup'); setError(''); }}>
-                Hesabın yok mu? Üye ol
+                No account? Sign up
               </button>
               <button className={styles.link} onClick={() => { setMode('forgot'); setError(''); }}>
-                Şifremi unuttum
+                Forgot password
               </button>
             </>
           )}
           {mode === 'signup' && (
             <button className={styles.link} onClick={() => { setMode('login'); setError(''); }}>
-              Zaten üye misin? Giriş yap
+              Already have an account? Login
             </button>
           )}
           {mode === 'forgot' && (

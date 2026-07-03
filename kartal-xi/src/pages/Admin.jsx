@@ -90,11 +90,11 @@ export default function Admin() {
 setMatchSaving(true); setMatchMsg('');
     const { error } = await supabase.from('matches').insert([{ ...matchForm, club_id: activeClub.id }]);
     if (error) setMatchMsg('Hata: ' + error.message);
-    else { setMatchMsg('Maç eklendi.'); setMatchForm(emptyMatch); fetchMatches(); }
+    else { setMatchMsg('Match added.'); setMatchForm(emptyMatch); fetchMatches(); }
     setMatchSaving(false);
   }
   async function handleDeleteMatch(id) {
-    if (!confirm('Sil?')) return;
+    if (!confirm('Delete?')) return;
     await supabase.from('matches').delete().eq('id', id); fetchMatches();
   }
   function openEditMatch(m) {
@@ -125,11 +125,11 @@ setMatchSaving(true); setMatchMsg('');
     const payload = { ...playerForm, club_id: activeClub.id, jersey_number: playerForm.jersey_number !== '' ? parseInt(playerForm.jersey_number) : null, bjk_total_games: playerForm.bjk_total_games !== '' ? parseInt(playerForm.bjk_total_games) : 0, boy: playerForm.boy !== '' ? parseInt(playerForm.boy) : null };
     const { error } = await supabase.from('players').insert([payload]);
     if (error) setPlayerMsg('Hata: ' + error.message);
-    else { setPlayerMsg('Oyuncu eklendi.'); setPlayerForm(emptyPlayer); fetchPlayers(); }
+    else { setPlayerMsg('Player added.'); setPlayerForm(emptyPlayer); fetchPlayers(); }
     setPlayerSaving(false);
   }
   async function handleDeletePlayer(id) {
-    if (!confirm('Sil?')) return;
+    if (!confirm('Delete?')) return;
     await supabase.from('players').delete().eq('id', id); fetchPlayers();
   }
   function openEdit(p) {
@@ -151,32 +151,32 @@ setMatchSaving(true); setMatchMsg('');
     let error;
     if (mvLineupId) { ({ error } = await supabase.from('lineups').update(payload).eq('id', mvLineupId)); }
     else { const r = await supabase.from('lineups').insert([payload]).select().single(); error = r.error; if (!error) setMvLineupId(r.data.id); }
-    setMvLineupMsg(error ? 'Hata: ' + error.message : 'Kadro kaydedildi.');
+    setMvLineupMsg(error ? 'Hata: ' + error.message : 'Lineup saved.');
     setMvLineupSaving(false);
   }
   async function handleScoreSave() {
     if (!mvMatchId) return; setMvScoreSaving(true); setMvScoreMsg('');
     const { error } = await supabase.from('matches').update({ home_score: mvHomeScore !== '' ? parseInt(mvHomeScore) : null, away_score: mvAwayScore !== '' ? parseInt(mvAwayScore) : null }).eq('id', mvMatchId);
     if (error) setMvScoreMsg('Hata: ' + error.message);
-    else { setMvScoreMsg('Skor kaydedildi.'); fetchMatches(); }
+    else { setMvScoreMsg('Score saved.'); fetchMatches(); }
     setMvScoreSaving(false);
   }
   async function handleResetMatchData() {
     if (!mvMatchId) return;
-    if (!window.confirm('Bu maçın tüm tahmin verileri ve puanları silinecek. Emin misin?')) return;
+    if (!window.confirm('All predictions and points for this match will be deleted. Are you sure?')) return;
     setResetting(true); setResetMsg('');
     await supabase.from('user_points').delete().eq('match_id', mvMatchId);
     await supabase.from('lineup_predictions').delete().eq('club_id', activeClub.id);
     await supabase.from('lineups').delete().eq('match_id', mvMatchId);
     setMvLineup({ formation:'4-3-3', slots:{}, subs:{}, status:'expected' });
     setMvLineupId(null);
-    setResetMsg('Tüm veriler sıfırlandı.');
+    setResetMsg('All data reset.');
     setResetting(false);
   }
 
   async function handleLogout() { await supabase.auth.signOut(); }
 
-  if (loading) return <div className={styles.center}>// yükleniyor...</div>;
+  if (loading) return <div className={styles.center}>// loading...</div>;
   if (!session) return (
     <div className={styles.loginWrap}>
       <div className={styles.loginBox}>
@@ -185,15 +185,15 @@ setMatchSaving(true); setMatchMsg('');
           <input className={styles.input} type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
           <input className={styles.input} type="password" placeholder="Şifre" value={password} onChange={e => setPassword(e.target.value)} required />
           {authError && <div className={styles.error}>{authError}</div>}
-          <button className={styles.btn} type="submit">Giriş Yap</button>
+          <button className={styles.btn} type="submit">Login</button>
         </form>
       </div>
     </div>
   );
   if (session.user.email !== ALLOWED_EMAIL) return (
     <div className={styles.center}>
-      <div className={styles.error}>Erişim reddedildi.</div>
-      <button className={styles.btn} onClick={handleLogout} style={{marginTop:'16px'}}>Çıkış</button>
+      <div className={styles.error}>Access denied.</div>
+      <button className={styles.btn} onClick={handleLogout} style={{marginTop:'16px'}}>Logout</button>
     </div>
   );
 
@@ -205,7 +205,7 @@ setMatchSaving(true); setMatchMsg('');
         <div className={styles.title}>// ADMIN PANEL</div>
         <div className={styles.headerRight}>
           <span className={styles.userLabel}>{session.user.email}</span>
-          <button className={styles.btnSmall} onClick={handleLogout}>Çıkış</button>
+          <button className={styles.btnSmall} onClick={handleLogout}>Logout</button>
         </div>
       </div>
 
@@ -224,7 +224,7 @@ setMatchSaving(true); setMatchMsg('');
       </div>
 
       <div className={styles.tabs}>
-        {[['maclar','Maçlar'],['oyuncular','Oyuncular'],['mac-verisi','Maç Verisi']].map(([key,label]) => (
+        {[['maclar','Matches'],['oyuncular','Players'],['mac-verisi','Match Data']].map(([key,label]) => (
           <button key={key} className={`${styles.tabBtn} ${tab === key ? styles.tabActive : ''}`} onClick={() => setTab(key)}>{label}</button>
         ))}
       </div>
@@ -233,30 +233,30 @@ setMatchSaving(true); setMatchMsg('');
       {tab === 'maclar' && (
         <>
           <div className={styles.section}>
-            <div className={styles.sectionTitle}>Maç Ekle</div>
+            <div className={styles.sectionTitle}>Add Match</div>
             <form onSubmit={handleMatchSubmit} className={styles.form}>
               <div className={styles.row}>
-                <div className={styles.field}><label>Ev Sahibi</label><input className={styles.input} value={matchForm.home_team} onChange={e => setMatchForm(f=>({...f,home_team:e.target.value}))} placeholder="Beşiktaş" required /></div>
-                <div className={styles.field}><label>Deplasman</label><input className={styles.input} value={matchForm.away_team} onChange={e => setMatchForm(f=>({...f,away_team:e.target.value}))} placeholder="Fenerbahçe" required /></div>
+                <div className={styles.field}><label>Home</label><input className={styles.input} value={matchForm.home_team} onChange={e => setMatchForm(f=>({...f,home_team:e.target.value}))} placeholder="Beşiktaş" required /></div>
+                <div className={styles.field}><label>Away</label><input className={styles.input} value={matchForm.away_team} onChange={e => setMatchForm(f=>({...f,away_team:e.target.value}))} placeholder="Fenerbahçe" required /></div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>Tarih & Saat</label><input className={styles.input} type="datetime-local" value={matchForm.match_date} onChange={e => setMatchForm(f=>({...f,match_date:e.target.value}))} required /></div>
+                <div className={styles.field}><label>Date & Time</label><input className={styles.input} type="datetime-local" value={matchForm.match_date} onChange={e => setMatchForm(f=>({...f,match_date:e.target.value}))} required /></div>
                 <div className={styles.field}><label>Tournament</label><input className={styles.input} value={matchForm.tournament} onChange={e => setMatchForm(f=>({...f,tournament:e.target.value}))} placeholder="e.g. Premier League" /></div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>Stadyum</label><input className={styles.input} value={matchForm.stadium} onChange={e => setMatchForm(f=>({...f,stadium:e.target.value}))} placeholder="Tüpraş Stadyumu" /></div>
-                <div className={styles.field}><label>Durum</label><select className={styles.input} value={matchForm.status} onChange={e => setMatchForm(f=>({...f,status:e.target.value}))}><option value="scheduled">Planlandı</option><option value="live">Canlı</option><option value="finished">Tamamlandı</option></select></div>
+                <div className={styles.field}><label>Stadium</label><input className={styles.input} value={matchForm.stadium} onChange={e => setMatchForm(f=>({...f,stadium:e.target.value}))} placeholder="Tüpraş Stadyumu" /></div>
+                <div className={styles.field}><label>Status</label><select className={styles.input} value={matchForm.status} onChange={e => setMatchForm(f=>({...f,status:e.target.value}))}><option value="scheduled">Scheduled</option><option value="live">Live</option><option value="finished">Finished</option></select></div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>Sezon</label><select className={styles.input} value={matchForm.season||'2025/26'} onChange={e => setMatchForm(f=>({...f,season:e.target.value}))}><option value="2025/26">2025/26</option><option value="2026/27">2026/27</option></select></div>
+                <div className={styles.field}><label>Season</label><select className={styles.input} value={matchForm.season||'2025/26'} onChange={e => setMatchForm(f=>({...f,season:e.target.value}))}><option value="2025/26">2025/26</option><option value="2026/27">2026/27</option></select></div>
                 <div className={styles.field}></div>
               </div>
               {matchMsg && <div className={matchMsg.startsWith('Hata')?styles.error:styles.success}>{matchMsg}</div>}
-              <button className={styles.btn} type="submit" disabled={matchSaving}>{matchSaving?'Kaydediliyor...':'Maç Ekle'}</button>
+              <button className={styles.btn} type="submit" disabled={matchSaving}>{matchSaving?'Saving...':'Maç Ekle'}</button>
             </form>
           </div>
           <div className={styles.section}>
-            <div className={styles.sectionTitle}>Tüm Maçlar ({matches.length})</div>
+            <div className={styles.sectionTitle}>All Matches ({matches.length})</div>
             <div className={styles.matchList}>
               {matches.map(m => (
                 <div className={styles.matchRow} key={m.id}>
@@ -266,8 +266,8 @@ setMatchSaving(true); setMatchMsg('');
                     {m.home_score !== null && m.home_score !== undefined && <span className={styles.matchScore}>{m.home_score} – {m.away_score}</span>}
                   </div>
                   <div style={{display:'flex',gap:'6px'}}>
-                    <button className={styles.btnEdit} onClick={() => openEditMatch(m)}>Düzenle</button>
-                    <button className={styles.btnDelete} onClick={() => handleDeleteMatch(m.id)}>Sil</button>
+                    <button className={styles.btnEdit} onClick={() => openEditMatch(m)}>Edit</button>
+                    <button className={styles.btnDelete} onClick={() => handleDeleteMatch(m.id)}>Delete</button>
                   </div>
                 </div>
               ))}
@@ -280,17 +280,17 @@ setMatchSaving(true); setMatchMsg('');
       {tab === 'oyuncular' && (
         <>
           <div className={styles.section}>
-            <div className={styles.sectionTitle}>Oyuncu Ekle</div>
+            <div className={styles.sectionTitle}>Add Player</div>
             <form onSubmit={handlePlayerSubmit} className={styles.form}>
               <div className={styles.row}>
-                <div className={styles.field}><label>Ad Soyad</label><input className={styles.input} value={playerForm.ad_soyad} onChange={e=>setPlayerForm(f=>({...f,ad_soyad:e.target.value}))} placeholder="Rafa Silva" required /></div>
-                <div className={styles.field}><label>Ülke</label>
+                <div className={styles.field}><label>Full Name</label><input className={styles.input} value={playerForm.ad_soyad} onChange={e=>setPlayerForm(f=>({...f,ad_soyad:e.target.value}))} placeholder="Rafa Silva" required /></div>
+                <div className={styles.field}><label>Country</label>
                   <input
                     className={styles.input}
                     list="countries-list"
                     value={playerForm.ulke}
                     onChange={e=>setPlayerForm(f=>({...f,ulke:e.target.value}))}
-                    placeholder="Ülke ara..."
+                    placeholder="Search country..."
                     required
                     autoComplete="off"
                   />
@@ -300,23 +300,23 @@ setMatchSaving(true); setMatchMsg('');
                 </div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>Doğum Tarihi</label><input className={styles.input} type="date" value={playerForm.dogum_tarihi} onChange={e=>setPlayerForm(f=>({...f,dogum_tarihi:e.target.value}))} required /></div>
-                <div className={styles.field}><label>Pozisyon</label><select className={styles.input} value={playerForm.pozisyon} onChange={e=>setPlayerForm(f=>({...f,pozisyon:e.target.value}))}>{POZISYONLAR.map(p=><option key={p}>{p}</option>)}</select></div>
+                <div className={styles.field}><label>Date of Birth</label><input className={styles.input} type="date" value={playerForm.dogum_tarihi} onChange={e=>setPlayerForm(f=>({...f,dogum_tarihi:e.target.value}))} required /></div>
+                <div className={styles.field}><label>Position</label><select className={styles.input} value={playerForm.pozisyon} onChange={e=>setPlayerForm(f=>({...f,pozisyon:e.target.value}))}>{POZISYONLAR.map(p=><option key={p}>{p}</option>)}</select></div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>Forma No</label><input className={styles.input} type="number" min="1" max="99" value={playerForm.jersey_number} onChange={e=>setPlayerForm(f=>({...f,jersey_number:e.target.value}))} placeholder="10" /></div>
-                <div className={styles.field}><label>Boy (cm)</label><input className={styles.input} type="number" min="150" max="220" value={playerForm.boy} onChange={e=>setPlayerForm(f=>({...f,boy:e.target.value}))} placeholder="183" /></div>
+                <div className={styles.field}><label>Jersey No</label><input className={styles.input} type="number" min="1" max="99" value={playerForm.jersey_number} onChange={e=>setPlayerForm(f=>({...f,jersey_number:e.target.value}))} placeholder="10" /></div>
+                <div className={styles.field}><label>Height (cm)</label><input className={styles.input} type="number" min="150" max="220" value={playerForm.boy} onChange={e=>setPlayerForm(f=>({...f,boy:e.target.value}))} placeholder="183" /></div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>BJK Toplam Maç</label><input className={styles.input} type="number" min="0" value={playerForm.bjk_total_games} onChange={e=>setPlayerForm(f=>({...f,bjk_total_games:e.target.value}))} placeholder="0" /></div>
-                <div className={styles.field}><label>Piyasa Değeri</label><input className={styles.input} value={playerForm.market_value} onChange={e=>setPlayerForm(f=>({...f,market_value:e.target.value}))} placeholder="15M" /></div>
+                <div className={styles.field}><label>Total Games</label><input className={styles.input} type="number" min="0" value={playerForm.bjk_total_games} onChange={e=>setPlayerForm(f=>({...f,bjk_total_games:e.target.value}))} placeholder="0" /></div>
+                <div className={styles.field}><label>Market Value</label><input className={styles.input} value={playerForm.market_value} onChange={e=>setPlayerForm(f=>({...f,market_value:e.target.value}))} placeholder="15M" /></div>
               </div>
               {playerMsg && <div className={playerMsg.startsWith('Hata')?styles.error:styles.success}>{playerMsg}</div>}
-              <button className={styles.btn} type="submit" disabled={playerSaving}>{playerSaving?'Kaydediliyor...':'Oyuncu Ekle'}</button>
+              <button className={styles.btn} type="submit" disabled={playerSaving}>{playerSaving?'Saving...':'Oyuncu Ekle'}</button>
             </form>
           </div>
           <div className={styles.section}>
-            <div className={styles.sectionTitle}>Kadro ({players.length})</div>
+            <div className={styles.sectionTitle}>Squad ({players.length})</div>
             {['Forvet','Ortasaha','Defans','Kaleci'].map(pos => {
               const group = players.filter(p => p.pozisyon === pos);
               if (!group.length) return null;
@@ -330,8 +330,8 @@ setMatchSaving(true); setMatchMsg('');
                         <span className={styles.matchMeta}>{p.ulke} · {p.boy ? p.boy+'cm · ' : ''}{p.market_value || ''}{p.dogum_tarihi ? ' · ' + new Date(p.dogum_tarihi).toLocaleDateString('tr-TR') : ''}</span>
                       </div>
                       <div style={{display:'flex',gap:'6px'}}>
-                        <button className={styles.btnEdit} onClick={() => openEdit(p)}>Düzenle</button>
-                        <button className={styles.btnDelete} onClick={() => handleDeletePlayer(p.id)}>Sil</button>
+                        <button className={styles.btnEdit} onClick={() => openEdit(p)}>Edit</button>
+                        <button className={styles.btnDelete} onClick={() => handleDeletePlayer(p.id)}>Delete</button>
                       </div>
                     </div>
                   ))}
@@ -345,11 +345,11 @@ setMatchSaving(true); setMatchMsg('');
       {/* MAÇ VERİSİ */}
       {tab === 'mac-verisi' && (
         <div className={styles.section}>
-          <div className={styles.sectionTitle}>Maç Verisi</div>
+          <div className={styles.sectionTitle}>Match Data</div>
           <div className={styles.field} style={{marginBottom:'20px',maxWidth:'440px'}}>
             <label>Maç Seç</label>
             <select className={styles.input} value={mvMatchId} onChange={e => loadMatchData(e.target.value)}>
-              <option value="">Maç seçiniz...</option>
+              <option value="">Select match...</option>
               {matches.map(m => <option key={m.id} value={m.id}>{m.home_team} vs {m.away_team} · {new Date(m.match_date).toLocaleDateString('tr-TR')} · {m.tournament}</option>)}
             </select>
           </div>
@@ -357,7 +357,7 @@ setMatchSaving(true); setMatchMsg('');
           {mvMatchId && <>
             {/* SKOR */}
             <div className={styles.subSection}>
-              <div className={styles.subSectionTitle}>Skor</div>
+              <div className={styles.subSectionTitle}>Score</div>
               <div className={styles.row} style={{maxWidth:'300px'}}>
                 <div className={styles.field}><label>{mvMatch?.home_team || 'Ev'}</label><input className={styles.input} type="number" min="0" value={mvHomeScore} onChange={e=>setMvHomeScore(e.target.value)} placeholder="0" /></div>
                 <div className={styles.field}><label>{mvMatch?.away_team || 'Dep'}</label><input className={styles.input} type="number" min="0" value={mvAwayScore} onChange={e=>setMvAwayScore(e.target.value)} placeholder="0" /></div>
@@ -370,7 +370,7 @@ setMatchSaving(true); setMatchMsg('');
 
             {/* GOLLER */}
             <div className={styles.subSection}>
-              <div className={styles.subSectionTitle}>Goller</div>
+              <div className={styles.subSectionTitle}>Goals</div>
               <GoalTimeline
                 matchId={mvMatchId}
                 matchHome={mvMatch?.home_team}
@@ -381,17 +381,17 @@ setMatchSaving(true); setMatchMsg('');
 
                         {/* KADRO */}
             <div className={styles.subSection}>
-              <div className={styles.subSectionTitle}>Kadro</div>
+              <div className={styles.subSectionTitle}>Lineup</div>
               <PitchLineup players={players} value={mvLineup} onChange={setMvLineup} />
               <div style={{display:'flex',alignItems:'center',gap:'12px',marginTop:'12px',flexWrap:'wrap'}}>
-                <button className={styles.btn} onClick={handleLineupSave} disabled={mvLineupSaving} type="button">{mvLineupSaving?'Kaydediliyor...':mvLineupId?'Güncelle':'Kaydet'}</button>
-                <button className={styles.btnDanger} onClick={handleResetMatchData} disabled={!mvMatchId||resetting} type="button">{resetting?'Sıfırlanıyor...':'Maç Verilerini Sıfırla'}</button>
+                <button className={styles.btn} onClick={handleLineupSave} disabled={mvLineupSaving} type="button">{mvLineupSaving?'Saving...':mvLineupId?'Güncelle':'Kaydet'}</button>
+                <button className={styles.btnDanger} onClick={handleResetMatchData} disabled={!mvMatchId||resetting} type="button">{resetting?'Resetting...':'Reset Match Data'}</button>
                 {mvLineupMsg && <div className={mvLineupMsg.startsWith('Hata')?styles.error:styles.success}>{mvLineupMsg}</div>}
                 {resetMsg && <div className={resetMsg.startsWith('Hata')?styles.error:styles.success}>{resetMsg}</div>}
               </div>
             </div>
           </>}
-          {!mvMatchId && <div className={styles.empty}>Veri girmek için bir maç seçin.</div>}
+          {!mvMatchId && <div className={styles.empty}>Select a match to enter data.</div>}
         </div>
       )}
 
@@ -401,17 +401,17 @@ setMatchSaving(true); setMatchMsg('');
       {editingPlayer && editForm && (
         <div className={styles.modalOverlay} onClick={() => setEditingPlayer(null)}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalTitle}>Oyuncu Düzenle</div>
+            <div className={styles.modalTitle}>Edit Player</div>
             <div className={styles.form}>
               <div className={styles.row}>
-                <div className={styles.field}><label>Ad Soyad</label><input className={styles.input} value={editForm.ad_soyad} onChange={e=>setEditForm(f=>({...f,ad_soyad:e.target.value}))} /></div>
-                <div className={styles.field}><label>Ülke</label>
+                <div className={styles.field}><label>Full Name</label><input className={styles.input} value={editForm.ad_soyad} onChange={e=>setEditForm(f=>({...f,ad_soyad:e.target.value}))} /></div>
+                <div className={styles.field}><label>Country</label>
                   <input
                     className={styles.input}
                     list="countries-list-edit"
                     value={editForm.ulke}
                     onChange={e=>setEditForm(f=>({...f,ulke:e.target.value}))}
-                    placeholder="Ülke ara..."
+                    placeholder="Search country..."
                     autoComplete="off"
                   />
                   <datalist id="countries-list-edit">
@@ -420,21 +420,21 @@ setMatchSaving(true); setMatchMsg('');
                 </div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>Doğum Tarihi</label><input className={styles.input} type="date" value={editForm.dogum_tarihi} onChange={e=>setEditForm(f=>({...f,dogum_tarihi:e.target.value}))} /></div>
-                <div className={styles.field}><label>Pozisyon</label><select className={styles.input} value={editForm.pozisyon} onChange={e=>setEditForm(f=>({...f,pozisyon:e.target.value}))}>{POZISYONLAR.map(p=><option key={p}>{p}</option>)}</select></div>
+                <div className={styles.field}><label>Date of Birth</label><input className={styles.input} type="date" value={editForm.dogum_tarihi} onChange={e=>setEditForm(f=>({...f,dogum_tarihi:e.target.value}))} /></div>
+                <div className={styles.field}><label>Position</label><select className={styles.input} value={editForm.pozisyon} onChange={e=>setEditForm(f=>({...f,pozisyon:e.target.value}))}>{POZISYONLAR.map(p=><option key={p}>{p}</option>)}</select></div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>Forma No</label><input className={styles.input} type="number" min="1" max="99" value={editForm.jersey_number} onChange={e=>setEditForm(f=>({...f,jersey_number:e.target.value}))} /></div>
-                <div className={styles.field}><label>Boy (cm)</label><input className={styles.input} type="number" value={editForm.boy} onChange={e=>setEditForm(f=>({...f,boy:e.target.value}))} /></div>
+                <div className={styles.field}><label>Jersey No</label><input className={styles.input} type="number" min="1" max="99" value={editForm.jersey_number} onChange={e=>setEditForm(f=>({...f,jersey_number:e.target.value}))} /></div>
+                <div className={styles.field}><label>Height (cm)</label><input className={styles.input} type="number" value={editForm.boy} onChange={e=>setEditForm(f=>({...f,boy:e.target.value}))} /></div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>BJK Toplam Maç</label><input className={styles.input} type="number" value={editForm.bjk_total_games} onChange={e=>setEditForm(f=>({...f,bjk_total_games:e.target.value}))} /></div>
-                <div className={styles.field}><label>Piyasa Değeri</label><input className={styles.input} value={editForm.market_value} onChange={e=>setEditForm(f=>({...f,market_value:e.target.value}))} /></div>
+                <div className={styles.field}><label>Total Games</label><input className={styles.input} type="number" value={editForm.bjk_total_games} onChange={e=>setEditForm(f=>({...f,bjk_total_games:e.target.value}))} /></div>
+                <div className={styles.field}><label>Market Value</label><input className={styles.input} value={editForm.market_value} onChange={e=>setEditForm(f=>({...f,market_value:e.target.value}))} /></div>
               </div>
               {editMsg && <div className={editMsg.startsWith('Hata')?styles.error:styles.success}>{editMsg}</div>}
               <div style={{display:'flex',gap:'8px',marginTop:'4px'}}>
-                <button className={styles.btn} onClick={handleEditSave} disabled={editSaving} type="button">{editSaving?'Kaydediliyor...':'Kaydet'}</button>
-                <button className={styles.btnSmall} onClick={() => setEditingPlayer(null)} type="button">İptal</button>
+                <button className={styles.btn} onClick={handleEditSave} disabled={editSaving} type="button">{editSaving?'Saving...':'Kaydet'}</button>
+                <button className={styles.btnSmall} onClick={() => setEditingPlayer(null)} type="button">Cancel</button>
               </div>
             </div>
           </div>
@@ -444,24 +444,24 @@ setMatchSaving(true); setMatchMsg('');
       {editingMatch && editMatchForm && (
         <div className={styles.modalOverlay} onClick={() => setEditingMatch(null)}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalTitle}>Maç Düzenle</div>
+            <div className={styles.modalTitle}>Edit Match</div>
             <div className={styles.form}>
               <div className={styles.row}>
-                <div className={styles.field}><label>Ev Sahibi</label><input className={styles.input} value={editMatchForm.home_team} onChange={e=>setEditMatchForm(f=>({...f,home_team:e.target.value}))} /></div>
-                <div className={styles.field}><label>Deplasman</label><input className={styles.input} value={editMatchForm.away_team} onChange={e=>setEditMatchForm(f=>({...f,away_team:e.target.value}))} /></div>
+                <div className={styles.field}><label>Home</label><input className={styles.input} value={editMatchForm.home_team} onChange={e=>setEditMatchForm(f=>({...f,home_team:e.target.value}))} /></div>
+                <div className={styles.field}><label>Away</label><input className={styles.input} value={editMatchForm.away_team} onChange={e=>setEditMatchForm(f=>({...f,away_team:e.target.value}))} /></div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>Tarih & Saat</label><input className={styles.input} type="datetime-local" value={editMatchForm.match_date} onChange={e=>setEditMatchForm(f=>({...f,match_date:e.target.value}))} /></div>
+                <div className={styles.field}><label>Date & Time</label><input className={styles.input} type="datetime-local" value={editMatchForm.match_date} onChange={e=>setEditMatchForm(f=>({...f,match_date:e.target.value}))} /></div>
                 <div className={styles.field}><label>Tournament</label><input className={styles.input} value={editMatchForm.tournament} onChange={e=>setEditMatchForm(f=>({...f,tournament:e.target.value}))} placeholder="e.g. Premier League" /></div>
               </div>
               <div className={styles.row}>
-                <div className={styles.field}><label>Stadyum</label><input className={styles.input} value={editMatchForm.stadium||''} onChange={e=>setEditMatchForm(f=>({...f,stadium:e.target.value}))} /></div>
-                <div className={styles.field}><label>Durum</label><select className={styles.input} value={editMatchForm.status} onChange={e=>setEditMatchForm(f=>({...f,status:e.target.value}))}><option value="scheduled">Planlandı</option><option value="live">Canlı</option><option value="finished">Tamamlandı</option></select></div>
+                <div className={styles.field}><label>Stadium</label><input className={styles.input} value={editMatchForm.stadium||''} onChange={e=>setEditMatchForm(f=>({...f,stadium:e.target.value}))} /></div>
+                <div className={styles.field}><label>Status</label><select className={styles.input} value={editMatchForm.status} onChange={e=>setEditMatchForm(f=>({...f,status:e.target.value}))}><option value="scheduled">Scheduled</option><option value="live">Live</option><option value="finished">Finished</option></select></div>
               </div>
               {editMatchMsg && <div className={editMatchMsg.startsWith('Hata')?styles.error:styles.success}>{editMatchMsg}</div>}
               <div style={{display:'flex',gap:'8px'}}>
-                <button className={styles.btn} onClick={handleEditMatchSave} disabled={editMatchSaving} type="button">{editMatchSaving?'Kaydediliyor...':'Kaydet'}</button>
-                <button className={styles.btnSmall} onClick={()=>setEditingMatch(null)} type="button">İptal</button>
+                <button className={styles.btn} onClick={handleEditMatchSave} disabled={editMatchSaving} type="button">{editMatchSaving?'Saving...':'Kaydet'}</button>
+                <button className={styles.btnSmall} onClick={()=>setEditingMatch(null)} type="button">Cancel</button>
               </div>
             </div>
           </div>
