@@ -38,9 +38,6 @@ export default function Navbar({ activeClub, onClubChange }) {
     <>
       <nav className={styles.nav}>
         <div className={styles.navLeft}>
-          <button className={styles.backBtn} onClick={() => navigate('/')} title="Home">
-            ←
-          </button>
           <NavLink to={basePath} className={styles.logo}>
             <div className={styles.logoMark}>M</div>
             <span className={styles.logoText}>Mister</span>

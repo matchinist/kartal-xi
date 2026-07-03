@@ -1,12 +1,12 @@
 .wrap { display: flex; flex-direction: column; }
 
 .gameTabs { display: flex; border-bottom: 0.5px solid var(--border); }
-.gameTab { flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; color: #fff; padding: 12px 4px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; margin-bottom: -1px; }
+.gameTab { flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; color: #fff; padding: 12px 4px; font-family: var(--mono); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; margin-bottom: -1px; }
 .gameTabActive { color: #fff; }
 
 .tabWarning { background: #1a0000; color: #ff6644; border-bottom: 0.5px solid #440000; padding: 8px 16px; font-size: 11px; text-align: center; }
-.tabRule { padding: 8px 16px; font-size: 11px; color: #fff; text-align: center; background: var(--bg2); border-bottom: 0.5px solid var(--border); }
-.pickHint { padding: 7px 16px; font-size: 11px; color: rgba(255,255,255,0.5); text-align: center; border-bottom: 0.5px solid var(--border); }
+.tabRule { padding: 8px 16px; font-size: 12px; color: #fff; text-align: center; background: var(--bg2); border-bottom: 0.5px solid var(--border); }
+.pickHint { padding: 7px 16px; font-size: 12px; color: rgba(255,255,255,0.5); text-align: center; border-bottom: 0.5px solid var(--border); }
 
 .pitchOuter { width: 100%; max-width: 440px; margin: 0 auto; padding: 10px 16px 0; }
 

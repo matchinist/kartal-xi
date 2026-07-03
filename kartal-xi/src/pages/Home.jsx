@@ -16,13 +16,6 @@ export default function Home({ activeClub, setActiveClub, leagueClubs, leagueId 
   const [players, setPlayers] = useState([]);
   const [weekPoints, setWeekPoints] = useState(null);
 
-  // Use visibility API to prevent tab-switching from clearing state
-  useEffect(() => {
-    const handler = () => { if (document.visibilityState === 'visible') { /* no-op, state preserved */ } };
-    document.addEventListener('visibilitychange', handler);
-    return () => document.removeEventListener('visibilitychange', handler);
-  }, []);
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
@@ -32,7 +25,7 @@ export default function Home({ activeClub, setActiveClub, leagueClubs, leagueId 
   useEffect(() => {
     setMatches([]); setMatchIndex(0); setOfficialSlots(null); setOfficialAnswers(null);
     fetchMatches(); fetchPlayers();
-  }, [activeClub]);
+  }, [activeClub?.id]);
 
   useEffect(() => {
     if (matches.length > 0) loadMatchDetails(matches[matchIndex]);
@@ -41,7 +34,7 @@ export default function Home({ activeClub, setActiveClub, leagueClubs, leagueId 
   useEffect(() => {
     if (session) fetchWeekPoints();
     else setWeekPoints(null);
-  }, [session, activeClub]);
+  }, [session, activeClub?.id]);
 
   async function fetchMatches() {
     const { data } = await supabase.from('matches').select('*')

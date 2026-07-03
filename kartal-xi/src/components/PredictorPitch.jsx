@@ -36,6 +36,7 @@ const COUNTRY_CODES = {
   'England':'gb-eng','İngiltere':'gb-eng','Scotland':'gb-sct','İskoçya':'gb-sct',
   'Wales':'gb-wls','Galler':'gb-wls','Montenegro':'me','Karadağ':'me',
   'Czech Republic':'cz','Çek Cumhuriyeti':'cz','Benin':'benin','Slovenia':'si','Slovenya':'si',
+  'Mali':'ml','Guinea':'gn','Gine':'gn','Gabon':'ga','Ivory Coast':'ci','Fildisi Sahili':'ci',
 };
 const CUSTOM_FLAGS = {
   'ar':'https://flagcdn.com/w80/ar.png',
@@ -50,6 +51,35 @@ const MU_DEFAULT_SLOTS = {
   cdm1: 'Kobbie Mainoo', cdm2: 'Manuel Ugarte',
   rw: 'Bryan Mbeumo', cam: 'Bruno Fernandes', lw: 'Matheus Cunha',
   st: 'Benjamin Šeško',
+};
+
+const BESIKTAS_DEFAULT_SLOTS = {
+  gk: 'G.Sazdagi',
+  rb: 'O.Kokcu', cb1: 'C.Onder', cb2: 'J.Olaitan', lb: 'N.Uysal',
+  cdm1: 'M.Rashica', cdm2: 'S.Ucan',
+  rw: 'E.Bilal Toure', cam: 'M.Hekimoglu', lw: 'W.Ndidi',
+  st: 'H.Oh',
+};
+const FENERBAHCE_DEFAULT_SLOTS = {
+  gk: 'Ederson',
+  rb: 'L.Mercan', cb1: 'J.Oosterwolde', cb2: 'M.Skriniar', lb: 'N.Semedo',
+  cdm1: 'N.Kante', cdm2: 'M.Guendouzi',
+  rw: 'K.Akturkoglu', cam: 'M.Asensio', lw: 'A.Musaba',
+  st: 'S.Cherif',
+};
+const GALATASARAY_DEFAULT_SLOTS = {
+  gk: 'U.Cakir',
+  rb: 'E.Elmali', cb1: 'A.Bardakci', cb2: 'D.Sanchez', lb: 'R.Sallai',
+  cdm1: 'M.Lemina', cdm2: 'L.Torreira',
+  rw: 'N.Lang', cam: 'G.Sara', lw: 'L.Sane',
+  st: 'V.Osimhen',
+};
+
+const DEFAULT_SLOTS_BY_CLUB = {
+  'manchester-united': MU_DEFAULT_SLOTS,
+  'besiktas': BESIKTAS_DEFAULT_SLOTS,
+  'fenerbahce': FENERBAHCE_DEFAULT_SLOTS,
+  'galatasaray': GALATASARAY_DEFAULT_SLOTS,
 };
 
 const GAME_TABS = [
@@ -96,9 +126,8 @@ function migrateSlots(old, of, nf) {
 }
 
 export default function PredictorPitch({ club, session, onRequireAuth, officialSlots, officialAnswers, players }) {
-  const isMU = club.id === 'manchester-united';
   const defaultFormation = '4-2-3-1';
-  const defaultSlots = isMU ? MU_DEFAULT_SLOTS : {};
+  const defaultSlots = DEFAULT_SLOTS_BY_CLUB[club.id] || {};
 
   const [gameTab, setGameTab] = useState('lineup');
   const [formation, setFormation] = useState(defaultFormation);
@@ -132,21 +161,28 @@ export default function PredictorPitch({ club, session, onRequireAuth, officialS
 
   useEffect(() => {
     setGameTab('lineup'); setSaved(false); setActiveSlot(null); setTabWarning('');
-    const def = club.id === 'manchester-united' ? MU_DEFAULT_SLOTS : {};
+    const def = DEFAULT_SLOTS_BY_CLUB[club.id] || {};
     setSlots(def); setPicks({best:null,firstgoal:null,firstsub:null}); setFormation(defaultFormation);
   }, [club.id]);
 
   useEffect(() => {
-    if (session) loadExisting();
-    else { setSlots(isMU ? MU_DEFAULT_SLOTS : {}); setPicks({best:null,firstgoal:null,firstsub:null}); setFormation(defaultFormation); setSaved(false); }
+    if (session && !pendingData) loadExisting();
+    else if (!session) { setSlots(DEFAULT_SLOTS_BY_CLUB[club.id] || {}); setPicks({best:null,firstgoal:null,firstsub:null}); setFormation(defaultFormation); setSaved(false); }
   }, [session, club.id]);
 
   useEffect(() => {
-    if (session && pendingData) { savePrediction(pendingData.formation, pendingData.slots, pendingData.picks); setPendingData(null); }
-  }, [session]);
+    if (session && pendingData) {
+      // Restore the pending lineup into view immediately, then persist
+      setFormation(pendingData.formation);
+      setSlots(pendingData.slots);
+      setPicks(pendingData.picks);
+      savePrediction(pendingData.formation, pendingData.slots, pendingData.picks);
+      setPendingData(null);
+    }
+  }, [session, pendingData]);
 
   async function loadExisting() {
-    const def = isMU ? MU_DEFAULT_SLOTS : {};
+    const def = DEFAULT_SLOTS_BY_CLUB[club.id] || {};
     setSlots(def); setPicks({best:null,firstgoal:null,firstsub:null}); setFormation(defaultFormation); setSaved(false);
     const { data } = await supabase.from('lineup_predictions').select('*')
       .eq('user_id', session.user.id).eq('club_id', club.id).limit(1);
@@ -233,7 +269,7 @@ export default function PredictorPitch({ club, session, onRequireAuth, officialS
       {tabWarning && <div className={styles.tabWarning}>{tabWarning}</div>}
 
       <div className={styles.tabRule}>
-        {gameTab==='lineup'    && `Every correct player scores ${perPlayer} pts · All correct = +${bonus} pts bonus`}
+        {gameTab==='lineup'    && `Correctly predict each starting player · ${perPlayer} pts each · All 11 = +${bonus} pts`}
         {gameTab==='best'      && `Correctly predict the best player · ${perPick} pts (via Sofascore rating)`}
         {gameTab==='firstgoal' && `Correctly predict the first goal scorer · ${perPick} pts`}
         {gameTab==='firstsub'  && `Correctly predict the first substituted player · ${perPick} pts`}
