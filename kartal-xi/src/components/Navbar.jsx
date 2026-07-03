@@ -1,45 +1,108 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { CLUBS, LEAGUES, getClubsByLeague } from '../data/clubs';
+import AuthModal from './AuthModal';
 import styles from './Navbar.module.css';
 
-const GitHubIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-  </svg>
-);
+export default function Navbar({ activeClub, onClubChange }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [clubOpen, setClubOpen] = useState(false);
+  const [session, setSession] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
+  const clubRef = useRef(null);
+  const menuRef = useRef(null);
+  const { leagueId } = useParams();
+  const navigate = useNavigate();
+  const leagueClubs = getClubsByLeague(leagueId);
+  const currentLeague = LEAGUES.find(l => l.id === leagueId);
 
-export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    function handle(e) {
+      if (clubRef.current && !clubRef.current.contains(e.target)) setClubOpen(false);
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
+    }
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, []);
+
+  const basePath = `/${leagueId}`;
 
   return (
-    <nav className={styles.nav}>
-      <NavLink to='/' className={styles.logo} onClick={() => setOpen(false)}>
-        <div className={styles.logoMark}>K</div>
-        KARTAL XI
-      </NavLink>
+    <>
+      <nav className={styles.nav}>
+        <div className={styles.navLeft}>
+          <button className={styles.backBtn} onClick={() => navigate('/')} title="Ana Sayfa">
+            ←
+          </button>
+          <NavLink to={basePath} className={styles.logo}>
+            <div className={styles.logoMark}>M</div>
+            <span className={styles.logoText}>Mister</span>
+          </NavLink>
+          {currentLeague && leagueClubs.length > 1 && (
+            <span className={styles.leagueName}>{currentLeague.name}</span>
+          )}
+        </div>
 
-      <ul className={`${styles.links} ${open ? styles.linksOpen : ''}`}>
-        <li><NavLink to="/matches" className={({ isActive }) => isActive ? styles.active : ''} onClick={() => setOpen(false)}>Matches</NavLink></li>
-        <li><NavLink to="/players" className={({ isActive }) => isActive ? styles.active : ''} onClick={() => setOpen(false)}>Players</NavLink></li>
-        <li><NavLink to="/standings" className={({ isActive }) => isActive ? styles.active : ''} onClick={() => setOpen(false)}>Standings</NavLink></li>
-        <li className={styles.mobileOnly}>
-          <a className={styles.ghLinkMobile} href="https://github.com/matchinist/kartal-xi" target="_blank" rel="noreferrer">
-            <GitHubIcon /> GitHub
-          </a>
-        </li>
-      </ul>
+        <div className={styles.navRight}>
+          {/* Club picker - only show if league has multiple clubs */}
+          {leagueClubs.length > 1 && activeClub && (
+            <div className={styles.clubPickerWrap} ref={clubRef}>
+              <button
+                className={styles.clubPickerBtn}
+                style={{ borderColor: activeClub.color, color: activeClub.color }}
+                onClick={() => setClubOpen(o => !o)}
+              >
+                {activeClub.short} ▾
+              </button>
+              {clubOpen && (
+                <div className={styles.clubDropdown}>
+                  {leagueClubs.map(c => (
+                    <button key={c.id}
+                      className={`${styles.clubDropItem} ${activeClub?.id === c.id ? styles.clubDropActive : ''}`}
+                      style={activeClub?.id === c.id ? { color: c.color } : {}}
+                      onClick={() => { onClubChange?.(c); setClubOpen(false); }}
+                    >{c.name}</button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
-      <div className={styles.navRight}>
-        <a className={styles.ghLink} href="https://github.com/matchinist/kartal-xi" target="_blank" rel="noreferrer">
-          <GitHubIcon />
-          GitHub
-        </a>
-        <button className={styles.burger} onClick={() => setOpen(o => !o)} aria-label="Menu">
-          <span className={`${styles.burgerLine} ${open ? styles.burgerOpen1 : ''}`} />
-          <span className={`${styles.burgerLine} ${open ? styles.burgerOpen2 : ''}`} />
-          <span className={`${styles.burgerLine} ${open ? styles.burgerOpen3 : ''}`} />
-        </button>
-      </div>
-    </nav>
+          {!session && (
+            <button className={styles.authBtn} onClick={() => setShowAuth(true)}>Giriş Yap</button>
+          )}
+
+          <div className={styles.menuWrap} ref={menuRef}>
+            <button className={styles.burger} onClick={() => setMenuOpen(o => !o)}>
+              <span className={`${styles.burgerLine} ${menuOpen ? styles.burgerOpen1 : ''}`} />
+              <span className={`${styles.burgerLine} ${menuOpen ? styles.burgerOpen2 : ''}`} />
+              <span className={`${styles.burgerLine} ${menuOpen ? styles.burgerOpen3 : ''}`} />
+            </button>
+            {menuOpen && (
+              <div className={styles.menuPopup}>
+                <NavLink to={`${basePath}/leaderboard`} className={styles.menuLink} onClick={() => setMenuOpen(false)}>Liderlik</NavLink>
+                <NavLink to={`${basePath}/settings`} className={styles.menuLink} onClick={() => setMenuOpen(false)}>Ayarlar</NavLink>
+                {session && (
+                  <>
+                    <div className={styles.menuDivider} />
+                    <div className={styles.menuUser}>{session.user.email}</div>
+                    <button className={styles.menuLogout} onClick={() => { supabase.auth.signOut(); setMenuOpen(false); }}>Çıkış Yap</button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      {showAuth && <AuthModal onClose={() => setShowAuth(false)} onSuccess={() => setShowAuth(false)} />}
+    </>
   );
 }

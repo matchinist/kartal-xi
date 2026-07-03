@@ -1,0 +1,16 @@
+.wrap { padding: 0; }
+.heading { font-family: var(--cond); font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 2px; padding: 20px 16px 12px; border-bottom: 0.5px solid var(--border); text-transform: uppercase; }
+.loading, .empty { padding: 40px; text-align: center; font-size: 13px; color: var(--text-dimmer); letter-spacing: 1px; }
+.table { width: 100%; border-collapse: collapse; }
+.table th { font-size: 10px; letter-spacing: 2px; color: var(--text-dimmer); text-transform: uppercase; padding: 10px 16px; border-bottom: 0.5px solid var(--border); text-align: left; }
+.table td { padding: 12px 16px; border-bottom: 0.5px solid var(--border); font-size: 13px; color: #fff; }
+.thRank, .tdRank { width: 40px; text-align: center; }
+.thPts, .tdPts { text-align: right; font-family: var(--cond); font-size: 18px; font-weight: 700; }
+.topRow td { background: rgba(255,255,255,0.02); }
+.gold { color: #f4c430; font-weight: 900; }
+.silver { color: #aaa; font-weight: 900; }
+.bronze { color: #cd7f32; font-weight: 900; }
+.avatar { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--bg3); border: 0.5px solid var(--border2); font-size: 10px; color: var(--text-dim); margin-right: 8px; font-family: var(--cond); font-weight: 700; }
+.tdUser { display: flex; align-items: center; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
+.fakeRow { opacity: 0.65; }

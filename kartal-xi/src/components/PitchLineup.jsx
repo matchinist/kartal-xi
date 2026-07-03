@@ -1,187 +1,118 @@
-import { useState } from 'react';
-import { formations } from '../data/formations';
+import { useState, useEffect } from 'react';
 import styles from './PitchLineup.module.css';
+
+const SLOT_LABELS = {
+  gk:'GK', rb:'RB', cb1:'CB', cb2:'CB', cb3:'CB', lb:'LB',
+  cdm1:'CDM', cdm2:'CDM', cm1:'CM', cm2:'CM', cm3:'CM', cam:'CAM',
+  rm:'RM', lm:'LM', rw:'RW', lw:'LW', st:'ST', st1:'ST', st2:'ST',
+};
+const POS_ORDER = ['Forvet','Ortasaha','Defans','Kaleci'];
 
 export default function PitchLineup({ players, value, onChange }) {
   const [formation, setFormation] = useState(value?.formation || '4-3-3');
   const [slots, setSlots] = useState(value?.slots || {});
   const [status, setStatus] = useState(value?.status || 'expected');
-  const [subs, setSubs] = useState(value?.subs || {});
-  const [dragging, setDragging] = useState(null);
-  const [dragFrom, setDragFrom] = useState(null);
-  const [dragFromSub, setDragFromSub] = useState(null);
+  const [activeSlot, setActiveSlot] = useState(null);
 
-  const slotDefs = formations[formation];
-
-  function emit(f, s, st, sb) { onChange({ formation: f, slots: s, status: st, subs: sb }); }
-
-  function handleFormationChange(f) { setFormation(f); setSlots({}); emit(f, {}, status, subs); }
-  function handleStatusChange(s) { setStatus(s); emit(formation, slots, s, subs); }
-
-  function handleDragStartPlayer(playerId) { setDragging(playerId); setDragFrom(null); setDragFromSub(null); }
-  function handleDragStartSlot(slotId, playerId) { setDragging(playerId); setDragFrom(slotId); setDragFromSub(null); }
-  function handleDragStartSub(subKey, playerId) { setDragging(playerId); setDragFrom(null); setDragFromSub(subKey); }
-
-  function handleDropOnSlot(slotId) {
-    if (!dragging) return;
-    const newSlots = { ...slots };
-    const newSubs = { ...subs };
-    if (dragFrom) delete newSlots[dragFrom];
-    if (dragFromSub) delete newSubs[dragFromSub];
-    const existing = Object.entries(newSlots).find(([, v]) => v === dragging);
-    if (existing) delete newSlots[existing[0]];
-    newSlots[slotId] = dragging;
-    setSlots(newSlots); setSubs(newSubs);
-    emit(formation, newSlots, status, newSubs);
-    setDragging(null); setDragFrom(null); setDragFromSub(null);
-  }
-
-  function handleDropOnSubs(e) {
-    e.preventDefault();
-    if (!dragging) return;
-    const newSlots = { ...slots };
-    const newSubs = { ...subs };
-    if (dragFrom) delete newSlots[dragFrom];
-    if (dragFromSub) delete newSubs[dragFromSub];
-    // Add to subs if not already there
-    const alreadyInSubs = Object.values(newSubs).includes(dragging);
-    if (!alreadyInSubs) {
-      const subKey = 'sub_' + Date.now();
-      newSubs[subKey] = dragging;
+  useEffect(() => {
+    if (value) {
+      setFormation(value.formation || '4-3-3');
+      setSlots(value.slots || {});
+      setStatus(value.status || 'expected');
     }
-    setSlots(newSlots); setSubs(newSubs);
-    emit(formation, newSlots, status, newSubs);
-    setDragging(null); setDragFrom(null); setDragFromSub(null);
+  }, [value]);
+
+  function update(f, s, st) {
+    onChange({ formation: f, slots: s, subs: {}, status: st });
   }
 
-  function handleDropOnBench(e) {
-    e.preventDefault();
-    if (!dragging) return;
-    const newSlots = { ...slots };
-    const newSubs = { ...subs };
-    if (dragFrom) delete newSlots[dragFrom];
-    if (dragFromSub) delete newSubs[dragFromSub];
-    setSlots(newSlots); setSubs(newSubs);
-    emit(formation, newSlots, status, newSubs);
-    setDragging(null); setDragFrom(null); setDragFromSub(null);
+  function handleSlotClick(slotId) { setActiveSlot(slotId); }
+
+  function handlePickPlayer(playerId) {
+    const newSlots = { ...slots, [activeSlot]: playerId };
+    setSlots(newSlots);
+    update(formation, newSlots, status);
+    setActiveSlot(null);
   }
 
-  function handleDragOver(e) { e.preventDefault(); }
+  function handleFormationChange(f) {
+    setFormation(f);
+    update(f, slots, status);
+  }
 
-  const placedIds = [...Object.values(slots), ...Object.values(subs)];
-  function getPlayer(id) { return players.find(p => p.id === id); }
+  function handleStatusChange(s) {
+    setStatus(s);
+    update(formation, slots, s);
+  }
+
+  // Import formations inline to avoid circular deps
+  const formationDefs = {
+    '4-3-3': [
+      {id:'gk',x:50,y:88},{id:'rb',x:82,y:70},{id:'cb1',x:61,y:70},{id:'cb2',x:39,y:70},{id:'lb',x:18,y:70},
+      {id:'cm1',x:80,y:45},{id:'cm2',x:50,y:45},{id:'cm3',x:20,y:45},
+      {id:'rw',x:80,y:18},{id:'st',x:50,y:18},{id:'lw',x:20,y:18},
+    ],
+    '4-2-3-1': [
+      {id:'gk',x:50,y:88},{id:'rb',x:82,y:72},{id:'cb1',x:61,y:72},{id:'cb2',x:39,y:72},{id:'lb',x:18,y:72},
+      {id:'cdm1',x:62,y:53},{id:'cdm2',x:38,y:53},
+      {id:'rw',x:80,y:33},{id:'cam',x:50,y:33},{id:'lw',x:20,y:33},
+      {id:'st',x:50,y:14},
+    ],
+    '4-4-2': [
+      {id:'gk',x:50,y:88},{id:'rb',x:85,y:70},{id:'cb1',x:62,y:70},{id:'cb2',x:38,y:70},{id:'lb',x:15,y:70},
+      {id:'rm',x:85,y:45},{id:'cm1',x:62,y:45},{id:'cm2',x:38,y:45},{id:'lm',x:15,y:45},
+      {id:'st1',x:62,y:18},{id:'st2',x:38,y:18},
+    ],
+  };
+
+  const slotDefs = formationDefs[formation] || formationDefs['4-3-3'];
+  const grouped = POS_ORDER.map(pos => ({ pos, players: players.filter(p => p.pozisyon === pos) })).filter(g => g.players.length);
 
   return (
     <div className={styles.wrap}>
       <div className={styles.controls}>
-        <div className={styles.formationPicker}>
-          {Object.keys(formations).map(f => (
-            <button key={f} className={`${styles.fBtn} ${formation === f ? styles.fActive : ''}`}
-              onClick={() => handleFormationChange(f)} type="button">{f}</button>
-          ))}
-        </div>
-        <div className={styles.statusPicker}>
-          <button className={`${styles.statusBtn} ${status === 'expected' ? styles.statusActive : ''}`}
-            onClick={() => handleStatusChange('expected')} type="button">Beklenen</button>
-          <button className={`${styles.statusBtn} ${status === 'official' ? styles.statusOfficial : ''}`}
-            onClick={() => handleStatusChange('official')} type="button">Resmi</button>
-        </div>
+        <select className={styles.sel} value={formation} onChange={e => handleFormationChange(e.target.value)}>
+          {Object.keys(formationDefs).map(f => <option key={f} value={f}>{f}</option>)}
+        </select>
+        <select className={styles.sel} value={status} onChange={e => handleStatusChange(e.target.value)}>
+          <option value="expected">Expected</option>
+          <option value="official">Official</option>
+        </select>
       </div>
 
-      <div className={styles.layout}>
-        {/* PITCH */}
-        <div className={styles.pitchWrap}>
-          <div className={styles.pitch}>
-            <div className={styles.centerCircle} />
-            <div className={styles.centerLine} />
-            <div className={styles.penaltyTop} />
-            <div className={styles.penaltyBottom} />
-            <div className={styles.goalTop} />
-            <div className={styles.goalBottom} />
-            {slotDefs.map(slot => {
-              const playerId = slots[slot.id];
-              const player = playerId ? getPlayer(playerId) : null;
-              return (
-                <div key={slot.id}
-                  className={`${styles.slot} ${playerId ? styles.slotFilled : styles.slotEmpty} ${dragging && !playerId ? styles.slotTarget : ''}`}
-                  style={{ left: `${slot.x}%`, top: `${slot.y}%` }}
-                  onDragOver={handleDragOver} onDrop={() => handleDropOnSlot(slot.id)}
-                  draggable={!!playerId}
-                  onDragStart={playerId ? () => handleDragStartSlot(slot.id, playerId) : undefined}
-                >
-                  {player ? (
-                    <>
-                      <div className={styles.slotAvatar}>
-                        {player.jersey_number != null
-                          ? <span className={styles.jerseyNum}>{player.jersey_number}</span>
-                          : player.ad_soyad.split(' ').map(w => w[0]).join('').slice(0,2)}
-                      </div>
-                      <div className={styles.slotName}>
-                        {player.jersey_number != null ? `${player.jersey_number}. ` : ''}
-                        {player.ad_soyad.split(' ').slice(-1)[0]}
-                      </div>
-                    </>
-                  ) : (
-                    <div className={styles.slotLabel}>{slot.label}</div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* SUBSTITUTES ZONE */}
-          <div className={styles.subsZone} onDragOver={handleDragOver} onDrop={handleDropOnSubs}>
-            <div className={styles.subsZoneLabel}>Yedekler — surukle ve birak</div>
-            <div className={styles.subsList}>
-              {Object.entries(subs).map(([key, pid]) => {
-                const p = getPlayer(pid);
-                if (!p) return null;
-                return (
-                  <div key={key} className={styles.subChip}
-                    draggable onDragStart={() => handleDragStartSub(key, pid)}>
-                    <span className={styles.subNum}>{p.jersey_number ?? '—'}</span>
-                    <span className={styles.subName}>{p.ad_soyad}</span>
-                    <span className={styles.subPos}>{p.pozisyon}</span>
-                  </div>
-                );
-              })}
-              {Object.keys(subs).length === 0 && (
-                <div className={styles.subsEmpty}>Yedek eklemek icin oyuncu surukleyin</div>
-              )}
+      <div className={styles.pitch}>
+        {slotDefs.map(slot => {
+          const pid = slots[slot.id];
+          const player = pid ? players.find(p => p.id === pid) : null;
+          return (
+            <div key={slot.id} className={`${styles.slot} ${pid ? styles.slotFilled : ''}`}
+              style={{ left: `${slot.x}%`, top: `${slot.y}%` }}
+              onClick={() => handleSlotClick(slot.id)}>
+              <div className={styles.avatar}>{player ? (player.jersey_number || player.ad_soyad?.slice(0,2)) : (SLOT_LABELS[slot.id] || slot.id.toUpperCase())}</div>
+              {player && <div className={styles.name}>{player.ad_soyad?.split(' ').slice(-1)[0]}</div>}
             </div>
-          </div>
-        </div>
+          );
+        })}
+      </div>
 
-        {/* PLAYER LIST */}
-        <div className={styles.playerList} onDragOver={handleDragOver} onDrop={handleDropOnBench}>
-          <div className={styles.playerListTitle}>Kadro ({players.length})</div>
-          <div className={styles.playerListHint}>Sahaya veya yedek alanina surukle</div>
-          {['Kaleci','Defans','Ortasaha','Forvet'].map(pos => {
-            const group = players.filter(p => p.pozisyon === pos);
-            if (!group.length) return null;
-            return (
-              <div key={pos} className={styles.posGroup}>
+      {activeSlot && (
+        <div className={styles.overlay} onClick={() => setActiveSlot(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalTitle}>Select Player — {SLOT_LABELS[activeSlot] || activeSlot}</div>
+            {grouped.map(({ pos, players: group }) => (
+              <div key={pos}>
                 <div className={styles.posLabel}>{pos}</div>
                 {group.map(p => (
-                  <div key={p.id}
-                    className={`${styles.playerChip} ${placedIds.includes(p.id) ? styles.placed : ''}`}
-                    draggable={!placedIds.includes(p.id)}
-                    onDragStart={() => handleDragStartPlayer(p.id)}
-                  >
-                    {p.jersey_number != null && <span className={styles.chipNum}>{p.jersey_number}</span>}
-                    <span className={styles.chipName}>{p.ad_soyad}</span>
-                    {placedIds.includes(p.id) && <span className={styles.chipCheck}>✓</span>}
-                  </div>
+                  <button key={p.id} className={styles.playerBtn} onClick={() => handlePickPlayer(p.id)}>
+                    {p.jersey_number ? p.jersey_number + '. ' : ''}{p.ad_soyad}
+                  </button>
                 ))}
               </div>
-            );
-          })}
+            ))}
+            <button className={styles.cancelBtn} onClick={() => setActiveSlot(null)}>Cancel</button>
+          </div>
         </div>
-      </div>
-
-      <div className={styles.counter}>
-        {Object.values(slots).filter(Boolean).length} / 11 ilk 11 · {Object.keys(subs).length} yedek · {status === 'official' ? 'Resmi Kadro' : 'Beklenen Kadro'}
-      </div>
+      )}
     </div>
   );
 }

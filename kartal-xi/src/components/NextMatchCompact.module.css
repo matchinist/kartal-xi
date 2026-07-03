@@ -1,0 +1,10 @@
+.wrap { display: flex; align-items: center; gap: 8px; padding: 14px 12px; border-bottom: 0.5px solid var(--border); }
+.arrow { background: transparent; border: 0.5px solid var(--border2); color: #fff; width: 32px; height: 32px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 3px; flex-shrink: 0; transition: all 0.2s; }
+.arrow:hover:not(:disabled) { border-color: #fff; }
+.arrow:disabled { opacity: 0.2; cursor: default; }
+.content { flex: 1; text-align: center; }
+.meta { font-size: 11px; letter-spacing: 1px; color: #fff; text-transform: uppercase; margin-bottom: 8px; opacity: 0.6; }
+.teams { display: flex; align-items: center; justify-content: center; gap: 12px; font-family: var(--cond); font-weight: 400; font-size: 20px; color: #fff; flex-wrap: wrap; }
+.vs { font-size: 13px; font-weight: 400; letter-spacing: 2px; color: rgba(255,255,255,0.3); }
+.score { font-size: 24px; font-weight: 900; letter-spacing: 2px; }
+.empty { flex: 1; text-align: center; font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 1px; }

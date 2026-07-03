@@ -3,62 +3,30 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --gold:       #cc2200;
-  --gold-dim:   #7a1500;
-  --red:        #cc2200;
-  --red-dim:    #7a1500;
-  --bg:         #080808;
-  --bg2:        #0d0d0d;
-  --bg3:        #111111;
-  --border:     #1c1c1c;
-  --border2:    #2a2a2a;
-  --text:       #ffffff;
-  --text-dim:   #aaaaaa;
-  --text-dimmer:#444444;
-  --mono:       'Share Tech Mono', monospace;
-  --cond:       'Barlow Condensed', sans-serif;
+  --red:          #cc2200;
+  --red-dim:      #8a1800;
+  --bg:           #0a0a0f;
+  --bg2:          #111118;
+  --bg3:          #16161f;
+  --border:       #22222e;
+  --border2:      #2e2e3e;
+  --text:         #ffffff;
+  --text-dim:     #c0c0cc;
+  --text-dimmer:  #888899;
+  --mono:         'Share Tech Mono', monospace;
+  --cond:         'Barlow Condensed', sans-serif;
 }
 
-html, body, #root {
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--mono);
-}
-
+html, body, #root { min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--mono); }
 a { color: inherit; text-decoration: none; }
 
 .grid-bg {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
   background-size: 48px 48px;
 }
-
 .scanline {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background: repeating-linear-gradient(
-    0deg, transparent, transparent 2px,
-    rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px
-  );
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
 }
-
-.page-wrap {
-  position: relative; z-index: 1;
-  max-width: 960px; margin: 0 auto;
-  padding-bottom: 60px;
-  animation: fadeUp 0.4s ease both;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.pulse { animation: pulse 1.4s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.15} }
-
-@media (max-width: 640px) {
-  .page-wrap { padding-bottom: 40px; }
-}
+.page-wrap { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; padding-bottom: 60px; }

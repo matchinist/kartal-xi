@@ -1,0 +1,42 @@
+.wrap {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  background: #0a0a0f;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.leaving { opacity: 0; transform: translateY(-12px); pointer-events: none; }
+
+.pitchBg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.pitchLine { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(42,74,42,0.4); }
+.pitchCircle { position: absolute; top: 50%; left: 50%; width: 320px; height: 320px; border-radius: 50%; border: 1px solid rgba(42,74,42,0.35); transform: translate(-50%,-50%); }
+.pitchTop { position: absolute; top: 0; left: 50%; width: 220px; height: 100px; border: 1px solid rgba(42,74,42,0.3); border-top: none; transform: translateX(-50%); }
+.pitchBottom { position: absolute; bottom: 0; left: 50%; width: 220px; height: 100px; border: 1px solid rgba(42,74,42,0.3); border-bottom: none; transform: translateX(-50%); }
+
+.inner {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 32px 24px; max-width: 420px; width: 100%; text-align: center; gap: 0;
+}
+
+.logo { display: flex; align-items: center; gap: 12px; margin-bottom: 44px; }
+.logoMark { width: 44px; height: 44px; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; font-weight: 900; border-radius: 5px; font-family: var(--cond); }
+.logoText { font-family: var(--cond); font-weight: 700; font-size: 36px; letter-spacing: 0.5px; color: #fff; }
+
+.tagline { font-family: var(--cond); font-weight: 900; font-size: 32px; color: #fff; line-height: 1.15; letter-spacing: 0.5px; margin-bottom: 14px; }
+
+.sub { font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.8; margin-bottom: 40px; }
+
+.clubs { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-bottom: 20px; }
+
+.clubBtn { width: 100%; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.5); padding: 14px 20px; font-family: var(--cond); font-size: 18px; font-weight: 700; cursor: pointer; border-radius: 4px; transition: all 0.2s; text-align: left; }
+.clubBtn:hover { border-color: rgba(255,255,255,0.4); color: #fff; background: rgba(255,255,255,0.07); }
+.clubBtnActive { background: rgba(255,255,255,0.06) !important; color: #fff !important; }
+
+.enterBtn { width: 100%; border: none; color: #fff; padding: 16px; font-family: var(--cond); font-size: 20px; font-weight: 900; letter-spacing: 2px; cursor: pointer; border-radius: 4px; transition: opacity 0.2s; }
+.enterBtn:hover { opacity: 0.88; }
+
+@media (max-width: 440px) {
+  .tagline { font-size: 26px; }
+  .logoText { font-size: 30px; }
+  .inner { padding: 24px 20px; }
+}

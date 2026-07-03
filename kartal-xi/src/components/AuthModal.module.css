@@ -1,0 +1,16 @@
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal { background: var(--bg2); border: 0.5px solid var(--border2); padding: 28px; width: 100%; max-width: 340px; border-radius: 4px; }
+.title { font-family: var(--cond); font-weight: 900; font-size: 22px; letter-spacing: 1px; color: #fff; margin-bottom: 20px; }
+.text { font-size: 13px; color: #fff; margin-bottom: 18px; line-height: 1.6; }
+.form { display: flex; flex-direction: column; gap: 12px; }
+.fieldWrap { display: flex; flex-direction: column; gap: 5px; }
+.label { font-size: 10px; letter-spacing: 1.5px; color: #fff; text-transform: uppercase; }
+.input { background: var(--bg3); border: 0.5px solid var(--border2); color: #fff; padding: 10px 12px; font-family: var(--mono); font-size: 13px; outline: none; border-radius: 2px; }
+.input:focus { border-color: var(--red-dim); }
+.btn { background: var(--red); color: #fff; border: none; padding: 11px; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; margin-top: 4px; border-radius: 2px; }
+.btn:disabled { opacity: 0.5; }
+.btnGhost { width: 100%; background: transparent; border: 0.5px solid var(--border2); color: #fff; padding: 10px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; margin-top: 12px; border-radius: 2px; }
+.error { font-size: 11px; color: #e05252; }
+.links { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 16px; }
+.link { background: transparent; border: none; color: rgba(255,255,255,0.5); font-family: var(--mono); font-size: 11px; letter-spacing: 0.5px; cursor: pointer; text-decoration: underline; padding: 2px; }
+.link:hover { color: #fff; }

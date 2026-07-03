@@ -1,0 +1,15 @@
+.wrap { display: flex; flex-direction: column; gap: 12px; }
+.goals { display: flex; flex-direction: column; gap: 4px; }
+.goalRow { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--bg2); border-radius: 3px; font-size: 13px; }
+.goalMin { font-family: var(--cond); font-weight: 700; color: var(--red); min-width: 30px; }
+.goalTeam { font-size: 11px; color: var(--text-dimmer); min-width: 80px; }
+.goalPlayer { flex: 1; }
+.delBtn { background: transparent; border: none; color: var(--text-dimmer); cursor: pointer; font-size: 16px; padding: 0 4px; }
+.delBtn:hover { color: var(--red); }
+.empty { font-size: 12px; color: var(--text-dimmer); padding: 8px; text-align: center; }
+.addRow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.addRow label { font-size: 12px; color: #fff; display: flex; align-items: center; gap: 6px; }
+.sel, .min { background: var(--bg2); border: 0.5px solid var(--border2); color: #fff; padding: 6px 8px; font-family: var(--mono); font-size: 12px; outline: none; border-radius: 2px; }
+.min { width: 70px; }
+.addBtn { background: var(--red); border: none; color: #fff; padding: 6px 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; cursor: pointer; border-radius: 2px; }
+.msg { font-size: 11px; color: var(--text-dim); }

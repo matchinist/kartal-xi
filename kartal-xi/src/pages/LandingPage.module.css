@@ -1,0 +1,45 @@
+.wrap {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 20px; position: relative; overflow: hidden;
+}
+
+.pitchBg { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.pitchLine { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(42,74,42,0.3); }
+.pitchCircle { position: absolute; top: 50%; left: 50%; width: 340px; height: 340px; border-radius: 50%; border: 1px solid rgba(42,74,42,0.25); transform: translate(-50%,-50%); }
+
+.hero {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; margin-bottom: 48px;
+}
+
+.logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.logoMark { width: 44px; height: 44px; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; font-weight: 900; border-radius: 5px; font-family: var(--cond); }
+.logoText { font-family: var(--cond); font-weight: 700; font-size: 36px; color: #fff; }
+
+.tagline { font-family: var(--cond); font-weight: 900; font-size: 28px; color: #fff; margin-bottom: 12px; }
+.sub { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.8; }
+
+.leagues {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 12px;
+  width: 100%; max-width: 420px;
+}
+
+.leagueCard {
+  display: flex; align-items: stretch;
+  background: var(--bg2); border: 0.5px solid var(--border2);
+  border-radius: 6px; overflow: hidden; cursor: pointer;
+  transition: all 0.2s; text-align: left;
+  padding: 0;
+}
+.leagueCard:hover { border-color: var(--league-color); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+
+.cardAccent { width: 4px; flex-shrink: 0; }
+
+.cardContent { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+
+.cardName { font-family: var(--cond); font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
+.cardSub { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 0.5px; }
+.cardCta { font-family: var(--cond); font-size: 16px; font-weight: 700; margin-top: 8px; letter-spacing: 1px; }

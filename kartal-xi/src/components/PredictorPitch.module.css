@@ -1,0 +1,102 @@
+.wrap { display: flex; flex-direction: column; }
+
+.gameTabs { display: flex; border-bottom: 0.5px solid var(--border); }
+.gameTab { flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent; color: #fff; padding: 12px 4px; font-family: var(--mono); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; margin-bottom: -1px; }
+.gameTabActive { color: #fff; }
+
+.tabWarning { background: #1a0000; color: #ff6644; border-bottom: 0.5px solid #440000; padding: 8px 16px; font-size: 11px; text-align: center; }
+.tabRule { padding: 8px 16px; font-size: 11px; color: #fff; text-align: center; background: var(--bg2); border-bottom: 0.5px solid var(--border); }
+.pickHint { padding: 7px 16px; font-size: 11px; color: rgba(255,255,255,0.5); text-align: center; border-bottom: 0.5px solid var(--border); }
+
+.pitchOuter { width: 100%; max-width: 440px; margin: 0 auto; padding: 10px 16px 0; }
+
+.pitch {
+  position: relative; width: 100%; padding-bottom: 152%;
+  background: #162b16; border: 1px solid #2a4a2a; border-radius: 6px; overflow: visible;
+}
+
+.formationSelect {
+  position: absolute; top: 8px; left: 8px; z-index: 10;
+  background: rgba(0,0,0,0.75); border: 0.5px solid rgba(255,255,255,0.2); color: #fff;
+  padding: 5px 24px 5px 8px; font-family: var(--mono); font-size: 11px; outline: none; cursor: pointer; border-radius: 3px;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23ffffff'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 6px center; background-size: 8px;
+}
+.formationSelect option { background: #111; }
+
+.centerCircle { position: absolute; width: 26%; padding-bottom: 26%; border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.centerLine { position: absolute; width: 100%; height: 1px; background: rgba(255,255,255,0.08); top: 50%; }
+.penaltyTop { position: absolute; width: 50%; height: 14%; border: 1px solid rgba(255,255,255,0.08); border-top: none; top: 0; left: 25%; }
+.penaltyBottom { position: absolute; width: 50%; height: 14%; border: 1px solid rgba(255,255,255,0.08); border-bottom: none; bottom: 0; left: 25%; }
+
+.slot {
+  position: absolute; transform: translate(-50%,-50%);
+  width: 18%; display: flex; flex-direction: column; align-items: center;
+  gap: 2px; cursor: pointer; z-index: 2; transition: transform 0.15s;
+}
+.slot:hover { transform: translate(-50%,-50%) scale(1.05); }
+
+.badgeRow { height: 22px; display: flex; align-items: center; justify-content: center; }
+.badge { display: flex; align-items: center; justify-content: center; }
+
+.slotAvatarWrap { position: relative; }
+
+.slotAvatar {
+  width: 46px; height: 46px; border-radius: 50%; border: none;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;
+}
+
+/* Remove button - small X in top-right of avatar */
+.removeBtn {
+  position: absolute; top: -4px; right: -4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #333; border: 1px solid #555; color: #fff;
+  font-size: 11px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 5; transition: background 0.15s; padding: 0;
+}
+.removeBtn:hover { background: var(--red); border-color: var(--red); }
+
+.flagImg { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; opacity: 0.8; filter: saturate(0.8) brightness(1.1); }
+.initials { font-family: var(--cond); font-size: 15px; font-weight: 700; color: #fff; }
+.slotPlus { font-size: 18px; color: rgba(255,255,255,0.2); }
+.slotHighlight .slotAvatar { box-shadow: 0 0 0 2px #fff; }
+
+.slotName {
+  font-size: 11px; color: #000; font-family: var(--mono); font-weight: 700;
+  white-space: nowrap; background: #fff;
+  padding: 2px 0; border-radius: 2px;
+  width: 100%; text-align: center; overflow: hidden; text-overflow: ellipsis;
+}
+.slotEmpty .slotName { color: rgba(255,255,255,0.3); background: rgba(0,0,0,0.6); font-weight: 400; font-size: 10px; }
+
+.slotPtsGood { font-size: 11px; font-family: var(--mono); font-weight: 700; background: #000; color: #fff; padding: 2px 0; border-radius: 2px; width: 100%; text-align: center; }
+.slotPtsBad  { font-size: 11px; font-family: var(--mono); font-weight: 700; background: #000; color: #fff; padding: 2px 0; border-radius: 2px; width: 100%; text-align: center; }
+
+.footer { padding: 14px 16px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+.saveBtn {
+  width: 100%; border: none; color: #fff; padding: 13px;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+  transition: all 0.3s; border-radius: 2px;
+}
+.saveBtn:disabled { opacity: 0.6; cursor: default; }
+.bmcWrap { display: flex; justify-content: center; min-height: 40px; }
+
+.modalOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
+@media (min-width: 641px) { .modalOverlay { align-items: center; } }
+.modal { background: var(--bg2); border: 0.5px solid var(--border2); border-radius: 12px 12px 0 0; padding: 20px 16px 32px; width: 100%; max-width: 440px; max-height: 80vh; display: flex; flex-direction: column; }
+@media (min-width: 641px) { .modal { border-radius: 6px; padding: 22px; } }
+.modalLabel { font-size: 12px; letter-spacing: 2px; color: #fff; text-transform: uppercase; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 0.5px solid var(--border); }
+.playerList { display: flex; flex-direction: column; overflow-y: auto; flex: 1; margin-bottom: 12px; }
+.playerListEmpty { font-size: 13px; color: #fff; padding: 20px; text-align: center; }
+.posLabel { font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.4); text-transform: uppercase; padding: 10px 10px 5px; }
+.playerOption { display: flex; align-items: center; gap: 12px; background: transparent; border: none; border-bottom: 0.5px solid var(--border); padding: 13px 10px; cursor: pointer; text-align: left; width: 100%; transition: background 0.12s; }
+.playerOption:hover { background: var(--bg3); }
+.playerOptionUsed { opacity: 0.3; pointer-events: none; }
+.playerNum { font-family: var(--cond); font-size: 16px; font-weight: 700; min-width: 24px; }
+.playerName { flex: 1; font-size: 14px; color: #fff; }
+.modalBtnGhost { width: 100%; background: transparent; border: 0.5px solid var(--border2); color: #fff; padding: 11px; font-family: var(--mono); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
