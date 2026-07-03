@@ -25,18 +25,23 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
+          cache-dependency-path: kartal-xi/package-lock.json
 
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
+        working-directory: kartal-xi
 
-      - run: npm run build
+      - name: Build
+        run: npm run build
+        working-directory: kartal-xi
 
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: './kartal-xi/dist'
 
       - uses: actions/deploy-pages@v4
         id: deployment
