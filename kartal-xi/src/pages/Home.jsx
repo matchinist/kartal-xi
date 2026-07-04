@@ -114,6 +114,7 @@ export default function Home({ activeClub, setActiveClub, leagueClubs, leagueId 
 
       <PredictorPitch
         club={activeClub} session={session}
+        match={currentMatch}
         onRequireAuth={() => setShowAuth(true)}
         officialSlots={officialSlots} officialAnswers={officialAnswers} players={players}
       />

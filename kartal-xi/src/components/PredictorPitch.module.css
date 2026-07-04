@@ -100,3 +100,11 @@
 .playerNum { font-family: var(--cond); font-size: 16px; font-weight: 700; min-width: 24px; }
 .playerName { flex: 1; font-size: 14px; color: #fff; }
 .modalBtnGhost { width: 100%; background: transparent; border: 0.5px solid var(--border2); color: #fff; padding: 11px; font-family: var(--mono); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+
+.defaultLabel {
+  position: absolute; top: 10px; right: 8px; z-index: 9;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.55); text-align: right; line-height: 1.4;
+  background: rgba(0,0,0,0.4); padding: 5px 8px; border-radius: 3px;
+  border-right: 2px solid rgba(255,255,255,0.3);
+}

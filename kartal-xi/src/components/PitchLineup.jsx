@@ -77,6 +77,7 @@ export default function PitchLineup({ players, value, onChange }) {
         <select className={styles.sel} value={status} onChange={e => handleStatusChange(e.target.value)}>
           <option value="expected">Expected</option>
           <option value="official">Official</option>
+          <option value="default">Default (starting template)</option>
         </select>
       </div>
 

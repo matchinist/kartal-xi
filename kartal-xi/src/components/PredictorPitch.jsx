@@ -44,43 +44,7 @@ const CUSTOM_FLAGS = {
 
 };
 
-// MU default lineup for 4-2-3-1
-const MU_DEFAULT_SLOTS = {
-  gk: 'André Onana',
-  rb: 'Diogo Dalot', cb1: 'Harry Maguire', cb2: 'Lisandro Martínez', lb: 'Luke Shaw',
-  cdm1: 'Kobbie Mainoo', cdm2: 'Manuel Ugarte',
-  rw: 'Bryan Mbeumo', cam: 'Bruno Fernandes', lw: 'Matheus Cunha',
-  st: 'Benjamin Šeško',
-};
 
-const BESIKTAS_DEFAULT_SLOTS = {
-  gk: 'G.Sazdagi',
-  rb: 'O.Kokcu', cb1: 'C.Onder', cb2: 'J.Olaitan', lb: 'N.Uysal',
-  cdm1: 'M.Rashica', cdm2: 'S.Ucan',
-  rw: 'E.Bilal Toure', cam: 'M.Hekimoglu', lw: 'W.Ndidi',
-  st: 'H.Oh',
-};
-const FENERBAHCE_DEFAULT_SLOTS = {
-  gk: 'Ederson',
-  rb: 'L.Mercan', cb1: 'J.Oosterwolde', cb2: 'M.Skriniar', lb: 'N.Semedo',
-  cdm1: 'N.Kante', cdm2: 'M.Guendouzi',
-  rw: 'K.Akturkoglu', cam: 'M.Asensio', lw: 'A.Musaba',
-  st: 'S.Cherif',
-};
-const GALATASARAY_DEFAULT_SLOTS = {
-  gk: 'U.Cakir',
-  rb: 'E.Elmali', cb1: 'A.Bardakci', cb2: 'D.Sanchez', lb: 'R.Sallai',
-  cdm1: 'M.Lemina', cdm2: 'L.Torreira',
-  rw: 'N.Lang', cam: 'G.Sara', lw: 'L.Sane',
-  st: 'V.Osimhen',
-};
-
-const DEFAULT_SLOTS_BY_CLUB = {
-  'manchester-united': MU_DEFAULT_SLOTS,
-  'besiktas': BESIKTAS_DEFAULT_SLOTS,
-  'fenerbahce': FENERBAHCE_DEFAULT_SLOTS,
-  'galatasaray': GALATASARAY_DEFAULT_SLOTS,
-};
 
 const GAME_TABS = [
   { id:'lineup',   label:'LINEUP'     },
@@ -125,13 +89,14 @@ function migrateSlots(old, of, nf) {
   return ns;
 }
 
-export default function PredictorPitch({ club, session, onRequireAuth, officialSlots, officialAnswers, players }) {
+export default function PredictorPitch({ club, session, match, onRequireAuth, officialSlots, officialAnswers, players }) {
   const defaultFormation = '4-2-3-1';
-  const defaultSlots = DEFAULT_SLOTS_BY_CLUB[club.id] || {};
+  const [clubDefault, setClubDefault] = useState({ formation: '4-2-3-1', slots: {} });
+  const [showingDefault, setShowingDefault] = useState(false);
 
   const [gameTab, setGameTab] = useState('lineup');
   const [formation, setFormation] = useState(defaultFormation);
-  const [slots, setSlots] = useState(defaultSlots);
+  const [slots, setSlots] = useState({});
   const [picks, setPicks] = useState({ best:null, firstgoal:null, firstsub:null });
   const [pendingData, setPendingData] = useState(null);
   const [saved, setSaved] = useState(false);
@@ -161,13 +126,13 @@ export default function PredictorPitch({ club, session, onRequireAuth, officialS
 
   useEffect(() => {
     setGameTab('lineup'); setSaved(false); setActiveSlot(null); setTabWarning('');
-    const def = DEFAULT_SLOTS_BY_CLUB[club.id] || {};
+    const def = clubDefault.slots;
     setSlots(def); setPicks({best:null,firstgoal:null,firstsub:null}); setFormation(defaultFormation);
   }, [club.id]);
 
   useEffect(() => {
     if (session && !pendingData) loadExisting();
-    else if (!session) { setSlots(DEFAULT_SLOTS_BY_CLUB[club.id] || {}); setPicks({best:null,firstgoal:null,firstsub:null}); setFormation(defaultFormation); setSaved(false); }
+    else if (!session) { setSlots(clubDefault.slots); setPicks({best:null,firstgoal:null,firstsub:null}); setFormation(defaultFormation); setSaved(false); }
   }, [session, club.id]);
 
   useEffect(() => {
@@ -181,9 +146,44 @@ export default function PredictorPitch({ club, session, onRequireAuth, officialS
     }
   }, [session, pendingData]);
 
+
+  // Fetch THIS match's default lineup template (status='default') and map UUIDs -> names
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchDefault() {
+      if (!match?.id || players.length === 0) { setClubDefault({ formation: '4-2-3-1', slots: {} }); return; }
+      const { data } = await supabase.from('lineups')
+        .select('formation, slots')
+        .eq('match_id', match.id).eq('status', 'default')
+        .order('updated_at', { ascending: false }).limit(1);
+      if (cancelled) return;
+      if (data && data[0]) {
+        const idToName = {};
+        players.forEach(p => { idToName[p.id] = p.ad_soyad; });
+        const nameSlots = {};
+        Object.entries(data[0].slots || {}).forEach(([slot, uuid]) => {
+          const nm = idToName[uuid];
+          if (nm) nameSlots[slot] = nm;
+        });
+        const df = { formation: data[0].formation || '4-2-3-1', slots: nameSlots };
+        setClubDefault(df);
+        // Show default immediately if user hasn't saved their own for this club
+        if (!saved) {
+          setFormation(df.formation);
+          setSlots(nameSlots);
+          setShowingDefault(Object.keys(nameSlots).length > 0);
+        }
+      } else {
+        setClubDefault({ formation: '4-2-3-1', slots: {} });
+      }
+    }
+    fetchDefault();
+    return () => { cancelled = true; };
+  }, [match?.id, players, saved]);
+
   async function loadExisting() {
-    const def = DEFAULT_SLOTS_BY_CLUB[club.id] || {};
-    setSlots(def); setPicks({best:null,firstgoal:null,firstsub:null}); setFormation(defaultFormation); setSaved(false);
+    const def = clubDefault.slots;
+    setPicks({best:null,firstgoal:null,firstsub:null}); setSaved(false);
     const { data } = await supabase.from('lineup_predictions').select('*')
       .eq('user_id', session.user.id).eq('club_id', club.id).limit(1);
     if (data?.[0]) {
@@ -192,6 +192,12 @@ export default function PredictorPitch({ club, session, onRequireAuth, officialS
       const p = data[0].picks || {};
       setPicks({ best:p.best||null, firstgoal:p.firstgoal||null, firstsub:p.firstsub||null });
       setSaved(true);
+      setShowingDefault(false);
+    } else {
+      // No saved prediction -> show match default template
+      setFormation(clubDefault.formation || defaultFormation);
+      setSlots(def);
+      setShowingDefault(Object.keys(def).length > 0);
     }
   }
 
@@ -230,7 +236,9 @@ export default function PredictorPitch({ club, session, onRequireAuth, officialS
 
   function handlePickPlayer(name) { setSlots(s=>({...s,[activeSlot]:name})); setActiveSlot(null); setSaved(false); }
 
+  function handleSaveInternal_markNotDefault() { setShowingDefault(false); }
   function handleSave() {
+    setShowingDefault(false);
     if (Object.values(slots).filter(Boolean).length < 11) {
       setTabWarning('Fill all 11 players first!'); setTimeout(()=>setTabWarning(''),2500); return;
     }
@@ -295,6 +303,9 @@ export default function PredictorPitch({ club, session, onRequireAuth, officialS
           <div className={styles.centerLine}/>
           <div className={styles.penaltyTop}/>
           <div className={styles.penaltyBottom}/>
+          {showingDefault && gameTab==='lineup' && (
+            <div className={styles.defaultLabel}>DEFAULT<br/>LINEUP</div>
+          )}
 
           {slotDefs.map(slot => {
             const name = slots[slot.id];

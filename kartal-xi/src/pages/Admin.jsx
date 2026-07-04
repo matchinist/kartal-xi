@@ -80,7 +80,7 @@ export default function Admin() {
     if (!matchId) return;
     const match = matches.find(m => m.id === matchId);
     if (match) { setMvHomeScore(match.home_score ?? ''); setMvAwayScore(match.away_score ?? ''); }
-    const { data: ldArr } = await supabase.from('lineups').select('*').eq('match_id', matchId).limit(1);
+    const { data: ldArr } = await supabase.from('lineups').select('*').eq('match_id', matchId).neq('status', 'default').order('updated_at', { ascending: false }).limit(1);
     const ld = ldArr?.[0] || null;
     if (ld) { setMvLineup({ formation: ld.formation, slots: ld.slots, subs: ld.subs || {}, status: ld.status || 'expected' }); setMvLineupId(ld.id); }
     else { setMvLineup({ formation:'4-3-3', slots:{}, subs:{}, status:'expected' }); setMvLineupId(null); }
@@ -147,11 +147,18 @@ setMatchSaving(true); setMatchMsg('');
   }
   async function handleLineupSave() {
     if (!mvMatchId) return; setMvLineupSaving(true); setMvLineupMsg('');
-    const payload = { match_id: mvMatchId, formation: mvLineup.formation, slots: mvLineup.slots, subs: mvLineup.subs || {}, status: mvLineup.status || 'expected', updated_at: new Date().toISOString() };
+    let targetId = mvLineupId;
+    // Default lineups are stored as a separate row per match. Never update the
+    // expected/official row when saving a default — always replace the match's default.
+    if (mvLineup.status === 'default') {
+      await supabase.from('lineups').delete().eq('match_id', mvMatchId).eq('status', 'default');
+      targetId = null;
+    }
+    const payload = { match_id: mvMatchId, club_id: activeClub.id, formation: mvLineup.formation, slots: mvLineup.slots, subs: mvLineup.subs || {}, status: mvLineup.status || 'expected', updated_at: new Date().toISOString() };
     let error;
-    if (mvLineupId) { ({ error } = await supabase.from('lineups').update(payload).eq('id', mvLineupId)); }
-    else { const r = await supabase.from('lineups').insert([payload]).select().single(); error = r.error; if (!error) setMvLineupId(r.data.id); }
-    setMvLineupMsg(error ? 'Hata: ' + error.message : 'Lineup saved.');
+    if (targetId) { ({ error } = await supabase.from('lineups').update(payload).eq('id', targetId)); }
+    else { const r = await supabase.from('lineups').insert([payload]).select().single(); error = r.error; if (!error && mvLineup.status !== 'default') setMvLineupId(r.data.id); }
+    setMvLineupMsg(error ? 'Error: ' + error.message : (mvLineup.status === 'default' ? 'Default lineup saved.' : 'Lineup saved.'));
     setMvLineupSaving(false);
   }
   async function handleScoreSave() {
@@ -384,7 +391,7 @@ setMatchSaving(true); setMatchMsg('');
               <div className={styles.subSectionTitle}>Lineup</div>
               <PitchLineup players={players} value={mvLineup} onChange={setMvLineup} />
               <div style={{display:'flex',alignItems:'center',gap:'12px',marginTop:'12px',flexWrap:'wrap'}}>
-                <button className={styles.btn} onClick={handleLineupSave} disabled={mvLineupSaving} type="button">{mvLineupSaving?'Saving...':mvLineupId?'Güncelle':'Kaydet'}</button>
+                <button className={styles.btn} onClick={handleLineupSave} disabled={mvLineupSaving} type="button">{mvLineupSaving?'Saving...':mvLineupId?'Update':'Save'}</button>
                 <button className={styles.btnDanger} onClick={handleResetMatchData} disabled={!mvMatchId||resetting} type="button">{resetting?'Resetting...':'Reset Match Data'}</button>
                 {mvLineupMsg && <div className={mvLineupMsg.startsWith('Hata')?styles.error:styles.success}>{mvLineupMsg}</div>}
                 {resetMsg && <div className={resetMsg.startsWith('Hata')?styles.error:styles.success}>{resetMsg}</div>}
